@@ -14,39 +14,50 @@
         <DesktopAcrylicBackdrop />
     </Window.SystemBackdrop>
     
-    <!---->
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="200"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
-
-        <Grid x:Name="AppTitleBar">
+        
+        <!--TitleBar-->
+        <Grid x:Name="AppTitleBar" Grid.Column="0" Grid.Row="0">
             <Image Source="/Assets/program.ico"
                    HorizontalAlignment="Left" 
                    VerticalAlignment="Top"
                    Width="16" Height="16" 
-                   Margin="8,8"/>
+                   Margin="8,8"
+                   Grid.Column="0"/>
             
             <TextBlock x:Name="AppTitleTextBlock" Text="Lucky Student Picker"
                        TextWrapping="NoWrap"
                        Style="{StaticResource CaptionTextBlockStyle}" 
                        VerticalAlignment="Top"
-                       Margin="28,8,28,28"/>
+                       Margin="28,8,28,28"
+                       Grid.Column="1"/>
         </Grid>
-
-        <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
+        
+        <!--Body-->
+        <Grid Grid.Column="0" Grid.Row="1" Margin="0,-20,0,0">
+            <!--The number of people left-->
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Column="0" Margin="12,4,0,0">
+                <FontIcon Glyph="&#xE716;" FontSize="16"></FontIcon>
+                <TextBlock Name="NumLeft" Text=" --" FontSize="14" FontFamily="Segoe UI Variable"></TextBlock>
+            </StackPanel>
+            <!--Sound & Repetition Controller-->
+            <AppBarToggleButton Name="Sound" Width="50" IsCompact="True" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,-10,58,0" Grid.Column="1" Icon="Volume" IsChecked="True" Checked="IsSoundOn" Unchecked="IsSoundOff"></AppBarToggleButton>
+            <AppBarToggleButton Name="Repeated" Width="50" IsCompact="True" HorizontalAlignment="Right" VerticalAlignment="Top" Grid.Column="2" Margin="0,-10,4,0" Icon="RepeatAll" Checked="IsRepeated" Unchecked="IsNotRepeated"></AppBarToggleButton>
+        </Grid>
+        
+        <!--Random Name-->
+        <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="0" Grid.Row="2" Margin="0,0,0,24">
             <TextBlock Name="text" Text="" FontSize="48" FontWeight="Bold" Margin="0,0,0,8"></TextBlock>
             <Button Name="button" Click="updRandName" Width="230" Height="75">
                 <StackPanel Name ="buttonStack" Orientation="Horizontal" VerticalAlignment="Center">
                     <FontIcon Glyph="&#xE72C;" FontSize="20" />
                     <TextBlock Name = "buttonText" Text="  选一个" FontSize="24" FontFamily="Microsoft YaHei UI" FontWeight="SemiLight"></TextBlock>
-                    
                 </StackPanel>
             </Button>
-            
-            
         </StackPanel>
-        
     </Grid>
 </Window>
