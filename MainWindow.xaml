@@ -52,20 +52,31 @@
                 </StackPanel>
             </CommandBar.Content>
             <!--Buttons-->
+            <AppBarButton Icon="Edit" Label="Edit">
+                <AppBarButton.Flyout>
+                    <Flyout>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBox Name="editText" PlaceholderText="Edit..." Margin="0,0,8,0" Width="100" AllowFocusOnInteraction="True"></TextBox>
+                            <Button Content="Apply" Click="editTextApply"></Button>
+                        </StackPanel>
+                    </Flyout>
+                </AppBarButton.Flyout>
+            </AppBarButton>
             <AppBarButton Icon="Refresh" Label="Restore" Name="Restore" Click="reset" IsCompact="True"></AppBarButton>
             <AppBarToggleButton Icon="Volume" Label="Sound" Name="Sound" IsChecked="True" Checked="IsSoundOn" Unchecked="IsSoundOff" IsCompact="True"/>
             <AppBarToggleButton Icon="RepeatAll" Label="Repeat" Name="Repeat" Checked="IsRepeated" Unchecked="IsNotRepeated" IsCompact="True"/>
             <!--Folded entries-->
             <CommandBar.SecondaryCommands>
-                <!--Edit the text displayed-->
-                <AppBarButton Icon="Edit" Label="Edit">
+                <!--Show logs-->
+                <AppBarButton Label="Logs">
+                    <AppBarButton.Icon>
+                        <FontIcon Glyph="&#xF57E;"></FontIcon>
+                    </AppBarButton.Icon>
                     <AppBarButton.Flyout>
-                        <Flyout ShouldConstrainToRootBounds="False">
-                            <StackPanel Orientation="Horizontal">
-                                <TextBox Name="editText" PlaceholderText="Edit..." Margin="0,0,8,0" Width="100" AllowFocusOnInteraction="True"></TextBox>
-                                <Button Content="Apply" Click="editTextApply"></Button>
-                            </StackPanel>
-                        </Flyout>
+                        <MenuFlyout>
+                            <MenuFlyoutItem Text="Open logs" Icon="OpenFile" Click="Showlogs"></MenuFlyoutItem>
+                            <MenuFlyoutItem Text="Clear logs" Icon="Delete" Click="Clearlogs"></MenuFlyoutItem>
+                        </MenuFlyout>
                     </AppBarButton.Flyout>
                 </AppBarButton>
                 <!--Lock the text displayed-->
@@ -79,13 +90,13 @@
 
         <!--Random Name-->
         <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="0" Grid.Row="2" Margin="0,0,0,24">
-            <TextBlock Name="text" Text="" FontSize="48" FontWeight="Bold" Margin="0,0,0,8"></TextBlock>
-            <Button Name="button" Click="updRandName" Width="230" Height="75">
+            <TextBlock Name="text" Text="" FontSize="48" FontWeight="Bold" Margin="0,0,0,12"></TextBlock>
+            <Button Name="button" Click="updRandName" Width="250" Height="85">
                 <Button.KeyboardAccelerators>
                     <KeyboardAccelerator Modifiers="None" Key="Down" ></KeyboardAccelerator>
                 </Button.KeyboardAccelerators>
                 <StackPanel Name ="buttonStack" Orientation="Horizontal" VerticalAlignment="Center">
-                    <FontIcon Name="buttonGlyph" Glyph="&#xE72a;" FontSize="20" />
+                    <FontIcon Name="buttonGlyph" Glyph="&#xF5B0;" FontSize="20" />
                     <TextBlock Name = "buttonText" Text="  开始" FontSize="24" FontFamily="Microsoft YaHei UI" FontWeight="SemiLight"></TextBlock>
                 </StackPanel>
             </Button>
