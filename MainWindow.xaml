@@ -9,6 +9,7 @@
     xmlns:a="using:Windows.UI.Xaml.Controls" 
     mc:Ignorable="d"
     Title="LuckyStudentPicker"
+    Closed="Window_Closed"
     >
     <Window.SystemBackdrop>
         <DesktopAcrylicBackdrop />
@@ -48,25 +49,16 @@
             <CommandBar.Content>
                 <StackPanel Orientation="Horizontal" Margin="0,15,0,0">
                     <FontIcon Glyph="&#xE716;" FontSize="16"></FontIcon>
-                    <TextBlock Name="NumLeft" Text=" -" FontSize="14" FontFamily="Segoe UI Variable"></TextBlock>
+                    <TextBlock Name="NumLeft" Text=" --" FontSize="14" FontFamily="Segoe UI Variable"></TextBlock>
                 </StackPanel>
             </CommandBar.Content>
             <!--Buttons-->
-            <AppBarButton Icon="Edit" Label="Edit">
-                <AppBarButton.Flyout>
-                    <Flyout>
-                        <StackPanel Orientation="Horizontal">
-                            <TextBox Name="editText" PlaceholderText="Edit..." Margin="0,0,8,0" Width="100" AllowFocusOnInteraction="True"></TextBox>
-                            <Button Content="Apply" Click="editTextApply"></Button>
-                        </StackPanel>
-                    </Flyout>
-                </AppBarButton.Flyout>
-            </AppBarButton>
             <AppBarButton Icon="Refresh" Label="Restore" Name="Restore" Click="reset" IsCompact="True"></AppBarButton>
             <AppBarToggleButton Icon="Volume" Label="Sound" Name="Sound" IsChecked="True" Checked="IsSoundOn" Unchecked="IsSoundOff" IsCompact="True"/>
             <AppBarToggleButton Icon="RepeatAll" Label="Repeat" Name="Repeat" Checked="IsRepeated" Unchecked="IsNotRepeated" IsCompact="True"/>
             <!--Folded entries-->
             <CommandBar.SecondaryCommands>
+                <AppBarButton Icon="Edit" Label="Edit" Click="EditClick"></AppBarButton>
                 <!--Show logs-->
                 <AppBarButton Label="Logs">
                     <AppBarButton.Icon>
@@ -91,9 +83,10 @@
         <!--Random Name-->
         <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="0" Grid.Row="2" Margin="0,0,0,24">
             <TextBlock Name="text" Text="" FontSize="48" FontWeight="Bold" Margin="0,0,0,12"></TextBlock>
-            <Button Name="button" Click="updRandName" Width="250" Height="85">
+            <Button Name="button" Click="updRandName" Width="250" Height="85" ToolTipService.ToolTip="Next">
                 <Button.KeyboardAccelerators>
                     <KeyboardAccelerator Modifiers="None" Key="Down" ></KeyboardAccelerator>
+                    <KeyboardAccelerator Modifiers="None" Key="Up" ></KeyboardAccelerator>
                 </Button.KeyboardAccelerators>
                 <StackPanel Name ="buttonStack" Orientation="Horizontal" VerticalAlignment="Center">
                     <FontIcon Name="buttonGlyph" Glyph="&#xF5B0;" FontSize="20" />

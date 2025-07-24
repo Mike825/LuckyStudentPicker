@@ -25,3 +25,7 @@
 #include <wil/cppwinrt_helpers.h>
 #include <Microsoft.UI.Xaml.Window.h>
 #include <winrt/Windows.Graphics.Display.h>
+#include <winrt/Base.h>
+/*#include "EditTextDialog.xaml.h"
+
+WINRT_EXPORT(winrt::LuckyStudentPicker::EditTextDialog);*/

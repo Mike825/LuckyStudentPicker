@@ -1,0 +1,11 @@
+namespace LuckyStudentPicker
+{
+    [default_interface]
+    runtimeclass EditTextDialog : Microsoft.UI.Xaml.Controls.ContentDialog
+    {
+        EditTextDialog();
+        Int32 MyProperty;
+        String InitialText;
+        String ResultText{ get; };
+    }
+}

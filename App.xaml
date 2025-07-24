@@ -5,14 +5,15 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:LuckyStudentPicker">
     <Application.Resources>
-        
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <XamlControlsResources xmlns="using:Microsoft.UI.Xaml.Controls" />
                 <!-- Other merged dictionaries here -->
             </ResourceDictionary.MergedDictionaries>
             <!-- Other app resources here -->
-            
+            <Style x:Key="RoundedButton" TargetType="Button">
+                <Setter Property="CornerRadius" Value="4"></Setter>
+            </Style>
         </ResourceDictionary>
     </Application.Resources>
     

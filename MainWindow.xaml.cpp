@@ -19,6 +19,7 @@
 #include <winrt/Windows.UI.Core.h>
 #include <winrt/Windows.Media.Core.h>
 #include <winrt/Windows.Media.Playback.h>
+#include "EditTextDialog.xaml.h"
 
 using namespace winrt;
 using namespace Microsoft::UI::Xaml;
@@ -53,9 +54,15 @@ namespace winrt::LuckyStudentPicker::implementation
     hstring fileName = L"\\UnluckyStudentLog.log";
     hstring fLocation = newFolder.Path() + fileName;
     std::ofstream log(winrt::to_string(fLocation).c_str(), std::ios::out | std::ios::app);
-    std::time_t getTime() {
+    
+    std::string getTime() {
         auto now = std::chrono::system_clock::now();
-        return std::chrono::system_clock::to_time_t(now);
+        std::time_t timeNow = std::chrono::system_clock::to_time_t(now);
+        char dt[66];
+        ctime_s(dt, sizeof(dt), &timeNow);
+        std::string rtime = dt;
+        rtime.erase(rtime.end() - 1);
+        return rtime;
     }
 
     /* ====== Synthesizing sounds ======*/
@@ -118,10 +125,8 @@ namespace winrt::LuckyStudentPicker::implementation
         this->ExtendsContentIntoTitleBar(true);
         this->SetTitleBar(AppTitleBar());
         SpeakTextAsync(L"");
-        std::time_t now = getTime();
-        char dt[66];
-        ctime_s(dt, sizeof(dt), &now);
-        log << "This message is from windowStartup(), current time: " << dt;
+        std::string timeNow = getTime();
+        log << "This message is from windowStartup(), current time: " << timeNow;
         log << "Window width: " << w << "/" << pw << "/" << windowWidth << ", Window height: " << h << "/" << ph << "/" << windowHeight << ".\n";
         log << "LuckyStudentPicker initialized successfully. \n\n";
     }
@@ -241,6 +246,7 @@ namespace winrt::LuckyStudentPicker::implementation
             hstring rn = randName();
             if (rn != L"点名结束") {
                 if (buttonText().Text() == L"  继续" || buttonText().Text() == L"  开始") buttonText().Text(L"  下一个");
+                buttonGlyph().Glyph(L"\uE72A");
                 text().Text(rn);
                 text().TextAlignment(winrt::Microsoft::UI::Xaml::TextAlignment::Center);
                 NumLeft().Text(L" " + to_hstring(22 - int_count));
@@ -257,17 +263,30 @@ namespace winrt::LuckyStudentPicker::implementation
         }
         else {
             if (buttonText().Text() == L"  继续" || buttonText().Text() ==L"  开始") buttonText().Text(L"  下一个");
+            buttonGlyph().Glyph(L"\uE72A");
             text().Text(randName());
             text().TextAlignment(winrt::Microsoft::UI::Xaml::TextAlignment::Center);
         }
         if (sound) SpeakTextAsync(text().Text());
     }
     
-    void MainWindow::editTextApply(IInspectable const&, RoutedEventArgs const&) {
-        text().Text(editText().Text());
-        text().TextAlignment(winrt::Microsoft::UI::Xaml::TextAlignment::Center);
-        if (sound) SpeakTextAsync(editText().Text());
-        buttonText().Text(L"  继续");
-        log << "Displayed text has been edited: " << to_string(editText().Text()) << ".\n";
+    winrt::Windows::Foundation::IAsyncAction MainWindow::EditClick(IInspectable const&, RoutedEventArgs const&) {
+        auto dialog = winrt::LuckyStudentPicker::EditTextDialog();
+        dialog.XamlRoot(this->Content().XamlRoot());
+        dialog.InitialText(text().Text());
+        auto result = co_await dialog.ShowAsync();
+        if (result == Microsoft::UI::Xaml::Controls::ContentDialogResult::Primary) {
+            hstring editedText = dialog.ResultText();
+            text().Text(editedText);
+            text().TextAlignment(winrt::Microsoft::UI::Xaml::TextAlignment::Center);
+            if (sound) SpeakTextAsync(editedText);
+            buttonText().Text(L"  继续");
+            buttonGlyph().Glyph(L"\uF5B0");
+            log << "Displayed text has been edited: " << to_string(editedText) << ".\n";
+        }
+    }
+
+    void MainWindow::Window_Closed(winrt::Windows::Foundation::IInspectable const&, winrt::Microsoft::UI::Xaml::WindowEventArgs const&) {
+        log << "LuckyStudentPicker.MainWindow is closed, time: " << getTime() << ".\n\n";
     }
 }
