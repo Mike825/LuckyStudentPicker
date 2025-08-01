@@ -1,0 +1,9 @@
+namespace LuckyStudentPicker
+{
+    [default_interface]
+    runtimeclass SettingsHomePage : Microsoft.UI.Xaml.Controls.Page
+    {
+        SettingsHomePage();
+        Int32 MyProperty;
+    }
+}

@@ -10,6 +10,8 @@
 #include <ctime>
 #include <fstream>
 #include <chrono>
+#include <vector>
+#include <numeric>
 #include <winrt/Windows.Storage.h>
 #include <winrt/Windows.Media.SpeechSynthesis.h>
 #include <winrt/Windows.UI.Xaml.Controls.h>
@@ -20,6 +22,7 @@
 #include <winrt/Windows.Media.Core.h>
 #include <winrt/Windows.Media.Playback.h>
 #include "EditTextDialog.xaml.h"
+#include "nlohmann/json.hpp"
 
 using namespace winrt;
 using namespace Microsoft::UI::Xaml;
@@ -30,6 +33,16 @@ using namespace Windows::Media::Core;
 using namespace Windows::Media::Playback;
 using namespace Microsoft::UI::Dispatching;
 using namespace Windows::UI::Xaml::Controls;
+using json = nlohmann::json;
+
+namespace nlohmann {
+    template <>
+    struct adl_serializer<winrt::hstring> {
+        static winrt::hstring from_json(const json& j) {
+            return winrt::to_hstring(j.get<std::string>());
+        }
+    };
+}
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -54,7 +67,16 @@ namespace winrt::LuckyStudentPicker::implementation
     hstring fileName = L"\\UnluckyStudentLog.log";
     hstring fLocation = newFolder.Path() + fileName;
     std::ofstream log(winrt::to_string(fLocation).c_str(), std::ios::out | std::ios::app);
+    hstring nameListFileName = L"\\UnluckyStudentsNameList.json";
+    hstring nameListFileLocation = newFolder.Path() + nameListFileName;
     
+    std::vector<hstring> load_hstring(hstring fpath) {
+        std::ifstream f(to_string(fpath));
+        json j;
+        f >> j;
+        return j.get<std::vector<winrt::hstring>>();
+    }
+
     std::string getTime() {
         auto now = std::chrono::system_clock::now();
         std::time_t timeNow = std::chrono::system_clock::to_time_t(now);
@@ -64,6 +86,15 @@ namespace winrt::LuckyStudentPicker::implementation
         rtime.erase(rtime.end() - 1);
         return rtime;
     }
+
+    /* ====== Defining variables ======*/
+    std::vector<hstring> orgNameList = load_hstring(nameListFileLocation);
+    int int_count = 0, int_rnum = 0, int_rpCount = 0, int_rpCount_progressing = 0, int_rp_random_index = 0, arrlen = orgNameList.size();
+    std::vector<hstring> newNameList, newNameList_rp;
+    long long int_count_repeat = 0;
+
+    static std::mt19937 gen(std::random_device{}());
+    std::vector<int> rnumList, l1;
 
     /* ====== Synthesizing sounds ======*/
 
@@ -126,7 +157,7 @@ namespace winrt::LuckyStudentPicker::implementation
         this->SetTitleBar(AppTitleBar());
         SpeakTextAsync(L"");
         std::string timeNow = getTime();
-        log << "This message is from windowStartup(), current time: " << timeNow;
+        log << "This message is from windowStartup(), current time: " << timeNow << '\n';
         log << "Window width: " << w << "/" << pw << "/" << windowWidth << ", Window height: " << h << "/" << ph << "/" << windowHeight << ".\n";
         log << "LuckyStudentPicker initialized successfully. \n\n";
     }
@@ -135,9 +166,9 @@ namespace winrt::LuckyStudentPicker::implementation
 
     bool sound = true, repeated = false;
     void MainWindow::IsSoundOn(winrt::Windows::Foundation::IInspectable const&, winrt::Microsoft::UI::Xaml::RoutedEventArgs const&) { sound = true; }
-    void MainWindow::IsRepeated(winrt::Windows::Foundation::IInspectable const&, winrt::Microsoft::UI::Xaml::RoutedEventArgs const&) { repeated = true; }
+    void MainWindow::IsRepeated(winrt::Windows::Foundation::IInspectable const&, winrt::Microsoft::UI::Xaml::RoutedEventArgs const&) { repeated = true; NumLeft().Text(L" " + to_hstring(int_count_repeat)); }
     void MainWindow::IsSoundOff(winrt::Windows::Foundation::IInspectable const&, winrt::Microsoft::UI::Xaml::RoutedEventArgs const&) { sound = false; }
-    void MainWindow::IsNotRepeated(winrt::Windows::Foundation::IInspectable const&, winrt::Microsoft::UI::Xaml::RoutedEventArgs const&) { repeated = false; }
+    void MainWindow::IsNotRepeated(winrt::Windows::Foundation::IInspectable const&, winrt::Microsoft::UI::Xaml::RoutedEventArgs const&) { repeated = false; NumLeft().Text(L" " + to_hstring(arrlen - int_count)); }
     void MainWindow::LockDownText(winrt::Windows::Foundation::IInspectable const&, winrt::Microsoft::UI::Xaml::RoutedEventArgs const&) { button().IsEnabled(false); }
     void MainWindow::UnlockText(winrt::Windows::Foundation::IInspectable const&, winrt::Microsoft::UI::Xaml::RoutedEventArgs const&) { button().IsEnabled(true); }
     void MainWindow::Showlogs(winrt::Windows::Foundation::IInspectable const&, winrt::Microsoft::UI::Xaml::RoutedEventArgs const&) {
@@ -151,13 +182,6 @@ namespace winrt::LuckyStudentPicker::implementation
     }
 
     /* ====== Generating randomized names ======*/
-
-    hstring orgNameList[22] = { L"êÃÓíØ©", L"À×¼á", L"ÕÅÒÕÜ°", L"Âíè¯", L"Áõº£ÑÓ", L"Ö£è÷Ýæ", L"ÕÔÐùÒã", L"ÁõÖÒå°", L"ÕÔ³çÐñ", L"¹ùÛ¿êÏ", L"ÀîÔÀ", L"ÂíºÆ¿­", L"ÍõÊæÑþ", L"ÍõÑî±ùÇå", L"º«Óê±´", L"Àî¼ÑÑô", L"ÁõÓê×¿", L"¹ù³¬", L"ÁÖÊ«î£", L"ºÎ¶G", L"ÃÏÞÈÖÝ", L"ÀîêÀÌ´" };
-    int int_count = 0, int_rnum = 0, int_rpCount = 0, int_rpCount_progressing = 0, int_rp_random_index = 0;
-    hstring newNameList[22] = { L"" }, newNameList_rp[22] = { L"" };
-
-    static std::mt19937 gen(std::random_device{}());
-    int rnumList[22] = { 0 }, l1[22] = { 0 };
 
     int randNum(int start, int end, bool trueRand) {
         switch (trueRand) {
@@ -174,28 +198,28 @@ namespace winrt::LuckyStudentPicker::implementation
         return 0;
     }
     
-    void getRandList(int* arr, int size) {
-        for (int i = 0; i < size; ++i) {
-            arr[i] = i;
-        }
-        for (int i = size - 1; i > 0; --i) {
+    void getRandList(std::vector<int> & arr) {
+        arr.resize(arrlen);
+        std::iota(arr.begin(), arr.end(), 0);
+        for (int i = static_cast<int>(arr.size()) - 1; i > 0; --i) {
             std::uniform_int_distribution<int> dist(0, i);
-            int j = dist(gen);
-            std::swap(arr[i], arr[j]);
+            std::swap(arr[i], arr[dist(gen)]);
         }
     }
 
     void initializeNameList() {
-        getRandList(rnumList, 22);
-        getRandList(l1, 22);
-        for (int i = 0; i < 22; i++) {
+        getRandList(rnumList);
+        getRandList(l1);
+        newNameList.resize(arrlen);
+        newNameList_rp.resize(arrlen);
+        for (int i = 0; i < arrlen; i++) {
             if (!repeated) newNameList[i] = orgNameList[rnumList[i]];
             else newNameList_rp[i] = orgNameList[rnumList[i]];
         }
         //writing logs
         log << "This message is from initializeNameList(), current method: " << (repeated ? "Repeat" : "nonRepeat") << ".\n";
         log << "Generated namelist: ";
-        for (int i = 0; i <= 21; i++) {
+        for (int i = 0; i < arrlen; i++) {
             if (repeated) log << to_string(newNameList_rp[i]) << " ";
             else log << to_string(newNameList[i]) << " ";
         }
@@ -206,25 +230,26 @@ namespace winrt::LuckyStudentPicker::implementation
         hstring hs;
         if (repeated == false) {
             if (int_count == 0) initializeNameList();
-            if (int_count <= 21) hs = newNameList[int_count], int_count++;
+            if (int_count <= arrlen - 1) hs = newNameList[int_count], int_count++;
             else hs = L"µãÃû½áÊø";
         }
         else {
             if (int_rpCount == 0) {
                 log << "This message is from randName(), with method Repeat.\n";
                 int_rpCount = randNum(10, 18, 1);
-                int_rp_random_index = randNum(0, 21, 0); 
+                int_rp_random_index = randNum(0, arrlen - 1, 0); 
                 log << "Reconstruct namelist after: " << int_rpCount << ", index offset: " << int_rp_random_index << ".\nNow calling initializeNameList()...\n";
                 initializeNameList();
             }
             if (int_rpCount_progressing < int_rpCount) {
-                hs = newNameList_rp[(int_rpCount_progressing + int_rp_random_index) % 22];
+                hs = newNameList_rp[(int_rpCount_progressing + int_rp_random_index) % arrlen];
                 int_rpCount_progressing++;
             }
             else {
                 hs = newNameList_rp[int_rpCount_progressing];
                 int_rpCount = 0, int_rpCount_progressing = 0; 
             }
+            int_count_repeat++;
         }
         return hs;
     }
@@ -233,11 +258,15 @@ namespace winrt::LuckyStudentPicker::implementation
 
     void MainWindow::reset(IInspectable const&, RoutedEventArgs const&) {
         int_count = 0;
+        if (repeated) int_count_repeat = 0;
         if (sound) SpeakTextAsync(L"ÖØÖÃ");
+        
         text().Text(L"");
-        NumLeft().Text(L" " + to_hstring(21));
+        if (repeated) NumLeft().Text(L" " + to_hstring(int_count_repeat));
+        else NumLeft().Text(L" " + to_hstring(arrlen - 1));
         buttonText().Text(L"  ¿ªÊ¼");
         buttonGlyph().Glyph(L"\uF5B0");
+
         log << "LuckyStudentPicker has been reset.\n";
     }
 
@@ -249,7 +278,7 @@ namespace winrt::LuckyStudentPicker::implementation
                 buttonGlyph().Glyph(L"\uE72A");
                 text().Text(rn);
                 text().TextAlignment(winrt::Microsoft::UI::Xaml::TextAlignment::Center);
-                NumLeft().Text(L" " + to_hstring(22 - int_count));
+                NumLeft().Text(L" " + to_hstring(arrlen - int_count));
             }
             else {
                 if (buttonText().Text() == L"  ÏÂÒ»¸ö") {
@@ -266,6 +295,7 @@ namespace winrt::LuckyStudentPicker::implementation
             buttonGlyph().Glyph(L"\uE72A");
             text().Text(randName());
             text().TextAlignment(winrt::Microsoft::UI::Xaml::TextAlignment::Center);
+            NumLeft().Text(L" " + to_hstring(int_count_repeat));
         }
         if (sound) SpeakTextAsync(text().Text());
     }
@@ -288,5 +318,10 @@ namespace winrt::LuckyStudentPicker::implementation
 
     void MainWindow::Window_Closed(winrt::Windows::Foundation::IInspectable const&, winrt::Microsoft::UI::Xaml::WindowEventArgs const&) {
         log << "LuckyStudentPicker.MainWindow is closed, time: " << getTime() << ".\n\n";
+    }
+
+    void MainWindow::SettingsClick(winrt::Windows::Foundation::IInspectable const&, winrt::Microsoft::UI::Xaml::RoutedEventArgs const&) {
+        auto settingsWindow = winrt::LuckyStudentPicker::SettingsWindow();
+        settingsWindow.Activate();
     }
 }

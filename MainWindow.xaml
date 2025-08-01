@@ -56,9 +56,9 @@
             <AppBarButton Icon="Refresh" Label="Restore" Name="Restore" Click="reset" IsCompact="True"></AppBarButton>
             <AppBarToggleButton Icon="Volume" Label="Sound" Name="Sound" IsChecked="True" Checked="IsSoundOn" Unchecked="IsSoundOff" IsCompact="True"/>
             <AppBarToggleButton Icon="RepeatAll" Label="Repeat" Name="Repeat" Checked="IsRepeated" Unchecked="IsNotRepeated" IsCompact="True"/>
+            <AppBarButton Icon="Edit" Label="Edit" Click="EditClick"></AppBarButton>
             <!--Folded entries-->
             <CommandBar.SecondaryCommands>
-                <AppBarButton Icon="Edit" Label="Edit" Click="EditClick"></AppBarButton>
                 <!--Show logs-->
                 <AppBarButton Label="Logs">
                     <AppBarButton.Icon>
@@ -77,6 +77,7 @@
                         <FontIcon Glyph="&#xE72E;"></FontIcon>
                     </AppBarToggleButton.Icon>
                 </AppBarToggleButton>
+                <AppBarButton Label="Settings" Icon="Setting" Click="SettingsClick"></AppBarButton>
             </CommandBar.SecondaryCommands>
         </CommandBar>
 

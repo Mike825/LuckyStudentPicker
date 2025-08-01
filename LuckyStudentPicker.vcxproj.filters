@@ -92,5 +92,8 @@
   <ItemGroup>
     <Page Include="EditTextDialog.xaml" />
     <Page Include="MainWindow.xaml" />
+    <Page Include="SettingsWindow.xaml" />
+    <Page Include="SettingsHomePage.xaml" />
+    <Page Include="AboutPage.xaml" />
   </ItemGroup>
 </Project>
