@@ -28,7 +28,7 @@ namespace winrt::LuckyStudentPicker::implementation
         winrt::Windows::Foundation::IAsyncAction SpeakTextAsync(hstring text);
         HWND GetWindowHandle();
         void getScreenResolution();
-        hstring createAppDataFolder();
+        void windowSizeChange(int mode);
         void windowStartup();
         void IsSoundOn(winrt::Windows::Foundation::IInspectable const&, winrt::Microsoft::UI::Xaml::RoutedEventArgs const&);
         void IsRepeated(winrt::Windows::Foundation::IInspectable const&, winrt::Microsoft::UI::Xaml::RoutedEventArgs const&);
@@ -40,6 +40,7 @@ namespace winrt::LuckyStudentPicker::implementation
         void Clearlogs(winrt::Windows::Foundation::IInspectable const&, winrt::Microsoft::UI::Xaml::RoutedEventArgs const&);
         void Window_Closed(winrt::Windows::Foundation::IInspectable const&, winrt::Microsoft::UI::Xaml::WindowEventArgs const&);
         void SettingsClick(winrt::Windows::Foundation::IInspectable const&, winrt::Microsoft::UI::Xaml::RoutedEventArgs const&);
+        void WindowCompactOverlayMode(winrt::Windows::Foundation::IInspectable const&, winrt::Microsoft::UI::Xaml::RoutedEventArgs const&);
     };
 }
 

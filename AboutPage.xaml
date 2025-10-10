@@ -9,11 +9,65 @@
     mc:Ignorable="d">
 
     <Grid>
-        <TextBlock Text="About" Style="{ThemeResource TitleTextBlockStyle}" Margin="20,20,20,0" Grid.Row="0"/>
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Row="1" Margin="20, 64, 0, 0">
-            <TextBlock Text="LuckyStudentPicker v1.3.0.0" FontSize="18" FontWeight="Bold" VerticalAlignment="Center"></TextBlock>
-            <HyperlinkButton FontSize="12" Content="-> Github repository" NavigateUri="https://github.com/Mike825/LuckyStudentPicker"></HyperlinkButton>
+        <TextBlock Text="About" Style="{ThemeResource TitleTextBlockStyle}" Margin="36,36,20,0" Grid.Row="0"/>
+        <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" VerticalAlignment="Top" Grid.Row="1" Margin="36, 84, 36, 0">
+            <!--<TextBlock Text="LuckyStudentPicker v1.3.2.0" FontSize="18" FontWeight="Bold" VerticalAlignment="Center"></TextBlock>
+            -->
+            <InfoBar IsOpen="True" IsClosable="False" Severity="Warning" Title="Notice" Message="This page is half completed and some of its functions might be moved to another pages in the future."></InfoBar>
+            <Expander IsExpanded="False" ExpandDirection="Down" HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" Margin="0,16,0,16">
+                <Expander.Header>
+                    <StackPanel Orientation="Horizontal">
+                        <FontIcon Glyph="&#xE946;" Margin="0, 0, 16, 0"></FontIcon>
+                        <TextBlock Text="Version Information"></TextBlock>
+                    </StackPanel>
+                </Expander.Header>
+                <Expander.Content>
+                    <StackPanel Orientation="Vertical">
+                        <TextBlock Text="Version" FontSize="16" FontWeight="Bold"></TextBlock>
+                        <StackPanel Orientation="Vertical" Margin="16,0,0,0">
+                            <TextBlock Text="Version 1.3.3.0"></TextBlock>
+                            <TextBlock Text="Build date: 2025.10.10"></TextBlock>
+                        </StackPanel>
+                        <TextBlock Text="What's New" FontSize="16" FontWeight="Bold"></TextBlock>
+                        <StackPanel Orientation="Vertical" Margin="16,0,0,0">
+                            <TextBlock Text="- Optimized display effects of Compact Overlay Mode. "></TextBlock>
+                            <TextBlock Text="- Updated the About Page in Settings window. "></TextBlock>
+                        </StackPanel>
+                        <TextBlock Text="Github repository" FontSize="16" FontWeight="Bold"></TextBlock>
+                        <HyperlinkButton Margin="6,0,0,0" Content="Click here to visit Github" NavigateUri="https://github.com/Mike825/LuckyStudentPicker"></HyperlinkButton>
+                    </StackPanel>
+                </Expander.Content>
+            </Expander>
+            <Expander IsExpanded="False" ExpandDirection="Down" HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" Margin="0,0,0,16">
+                <Expander.Header>
+                    <StackPanel Orientation="Horizontal">
+                        <FontIcon Glyph="&#xEB9D;" Margin="0, 0, 16, 0"></FontIcon>
+                        <TextBlock Text="Shortcuts"></TextBlock>
+                    </StackPanel>
+                </Expander.Header>
+                <Expander.Content>
+                    <StackPanel Orientation="Vertical">
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                            <TextBlock Text="Open data folder: " VerticalAlignment="Center" Margin="0,0,16,0"></TextBlock>
+                            <Button Click="OpenDataFolder">
+                                <Button.Content>
+                                    <FontIcon Glyph="&#xE8B7;"></FontIcon>
+                                </Button.Content>
+                            </Button>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Edit Namelist: " VerticalAlignment="Center" Margin="0,0,16,0"></TextBlock>
+                            <Button Click="EditNamelist">
+                                <Button.Content>
+                                    <FontIcon Glyph="&#xE70F;"></FontIcon>
+                                </Button.Content>
+                            </Button>
+                        </StackPanel>
+                    </StackPanel>
+                </Expander.Content>
+            </Expander>
+            
         </StackPanel>
-        <ImageIcon Source="/Assets/program.ico" Width="100" Height="100" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,64,20,20"></ImageIcon>
+        <!--<ImageIcon Source="/Assets/program.ico" Width="100" Height="100" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,64,20,20"></ImageIcon>-->
     </Grid>
 </Page>

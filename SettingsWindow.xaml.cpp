@@ -28,16 +28,10 @@ namespace winrt::LuckyStudentPicker::implementation
         throw hresult_not_implemented();
     }
 
-    HWND SettingsWindow::GetWindowHandle() {
-        auto windowNative = this->try_as<::IWindowNative>();
-        HWND hWnd{ nullptr };
-        if (windowNative) windowNative->get_WindowHandle(&hWnd);
-        return hWnd;
-    }
-
     void SettingsWindow::windowStartup() {
         this->ExtendsContentIntoTitleBar(true);
         this->SetTitleBar(SettingsTitleBar());
+        this->AppWindow().SetIcon(L"Assets/program.ico");
         this->AppWindow().TitleBar().PreferredHeightOption(winrt::Microsoft::UI::Windowing::TitleBarHeightOption::Tall);
     }
 
@@ -57,6 +51,7 @@ namespace winrt::LuckyStudentPicker::implementation
     }
 
     void winrt::LuckyStudentPicker::implementation::SettingsWindow::SettingsNV_Loaded(winrt::Windows::Foundation::IInspectable const& sender, winrt::Microsoft::UI::Xaml::RoutedEventArgs const& e) {
+        SettingsNV().SelectedItem(SettingsNV().MenuItems().GetAt(0));
         ContentFrame().Navigate(xaml_typename<SettingsHomePage>());
     }
 

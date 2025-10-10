@@ -17,7 +17,7 @@
     
     <Grid>
         <StackPanel Orientation="Vertical">
-            <TextBox Name="EditBox"/>
+            <TextBox Name="EditBox" MaxLength="5"/>
         </StackPanel>
     </Grid>
 </ContentDialog>

@@ -78,22 +78,44 @@
                     </AppBarToggleButton.Icon>
                 </AppBarToggleButton>
                 <AppBarButton Label="Settings" Icon="Setting" Click="SettingsClick"></AppBarButton>
+                <AppBarButton Name="CompactOverlay" Label="Compact Overlay Mode" Click="WindowCompactOverlayMode">
+                    <AppBarButton.Icon>
+                        <FontIcon Name="CompactOverlayIcon" Glyph="&#xEE49;"></FontIcon>
+                    </AppBarButton.Icon>
+                </AppBarButton>
             </CommandBar.SecondaryCommands>
         </CommandBar>
 
         <!--Random Name-->
         <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="0" Grid.Row="2" Margin="0,0,0,24">
-            <TextBlock Name="text" Text="" FontSize="48" FontWeight="Bold" Margin="0,0,0,12"></TextBlock>
-            <Button Name="button" Click="updRandName" Width="250" Height="85" ToolTipService.ToolTip="Next">
+            <TextBlock Name="text" Text="" FontSize="48" FontWeight="Bold" Margin="0,12,0,18"></TextBlock>
+            <Button Name="button" Click="updRandName" Width="230" Height="80" ToolTipService.ToolTip="Next">
                 <Button.KeyboardAccelerators>
                     <KeyboardAccelerator Modifiers="None" Key="Down" ></KeyboardAccelerator>
                     <KeyboardAccelerator Modifiers="None" Key="Up" ></KeyboardAccelerator>
+                    <KeyboardAccelerator Modifiers="None" Key="PageDown"></KeyboardAccelerator>
+                    <KeyboardAccelerator Modifiers="None" Key="PageUp"></KeyboardAccelerator>
                 </Button.KeyboardAccelerators>
                 <StackPanel Name ="buttonStack" Orientation="Horizontal" VerticalAlignment="Center">
                     <FontIcon Name="buttonGlyph" Glyph="&#xF5B0;" FontSize="20" />
-                    <TextBlock Name = "buttonText" Text="  开始" FontSize="24" FontFamily="Microsoft YaHei UI" FontWeight="SemiLight"></TextBlock>
+                    <TextBlock Name = "buttonText" Text="  开始" FontSize="24" FontFamily="Microsoft YaHei UI" FontWeight="Light"></TextBlock>
                 </StackPanel>
             </Button>
         </StackPanel>
+        
+        <!--Status Bar
+        <Border x:Name="StatusBarBorder" Background="{StaticResource AcrylicInAppFillColorBaseBrush}" Height="20" VerticalAlignment="Bottom" Grid.Row="1">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="20,0,0,0">
+                <TextBlock Name="RandomMode" Text="Sequence Mode" Style="{StaticResource CaptionTextBlockStyle}" FontSize="12" Foreground="{ThemeResource AccentAAFillColorDisabledBrush}"></TextBlock>
+                <AppBarSeparator Margin="10,0,10,0" />
+                <TextBlock Name="TotalNamesCount" Text="7" Style="{StaticResource CaptionTextBlockStyle}" FontSize="12" Foreground="{ThemeResource AccentAAFillColorDisabledBrush}"></TextBlock>
+                <TextBlock Text=" counted" Style="{StaticResource CaptionTextBlockStyle}" FontSize="12" Foreground="{ThemeResource AccentAAFillColorDisabledBrush}"></TextBlock>
+                <AppBarSeparator Margin="10,0,10,0" />
+                <TextBlock Text="Sound" Style="{StaticResource CaptionTextBlockStyle}" FontSize="12" Foreground="{ThemeResource AccentAAFillColorDisabledBrush}"></TextBlock>
+                <TextBlock Name="SoundStatusIndicator" Text=" on" Style="{StaticResource CaptionTextBlockStyle}" FontSize="12" Foreground="{ThemeResource AccentAAFillColorDisabledBrush}"></TextBlock>
+                <AppBarSeparator Margin="10,0,10,0" />
+                <TextBlock Name="LogIndicator" Text="Logging" Style="{StaticResource CaptionTextBlockStyle}" FontSize="12" Foreground="{ThemeResource AccentAAFillColorDisabledBrush}"></TextBlock>
+            </StackPanel>
+        </Border>-->
     </Grid>
 </Window>

@@ -130,6 +130,7 @@ namespace winrt::LuckyStudentPicker::implementation
     }
 
     int32_t w = 1920, h = 1080, pw = 1920, ph = 1080;
+    int CurrentWindowMode = 1;
 
     void MainWindow::getScreenResolution() {
         HWND hWnd = GetWindowHandle();
@@ -147,18 +148,42 @@ namespace winrt::LuckyStudentPicker::implementation
         ph = physicalHeight;
     }
 
-    void MainWindow::windowStartup() {
+    void MainWindow::windowSizeChange(int mode) {
         getScreenResolution();
-        int windowWidth = (int)pw / 4, windowHeight = (int)ph / 3;
-        int wCenter = (w - windowWidth) / 2, hCenter = (h - windowHeight) / 2;
-        winrt::Windows::Graphics::RectInt32 windowPos{ wCenter, hCenter, windowWidth, windowHeight };
-        this->AppWindow().MoveAndResize(windowPos);
+        switch (mode) {
+        case (1): {//normal mode
+            int W = ((int)pw / 4), H = (int)ph / 3;
+            int windowWidth = (W >= 1080) ? 1080 : W, windowHeight = (W >= 720) ? 720 : H;
+            int wCenter = (w - windowWidth) / 2, hCenter = (h - windowHeight) / 2;
+            winrt::Windows::Graphics::RectInt32 windowPos{ wCenter, hCenter, windowWidth, windowHeight };
+            this->AppWindow().MoveAndResize(windowPos);
+            this->AppWindow().SetPresenter(Microsoft::UI::Windowing::AppWindowPresenterKind::Overlapped);
+            if (CurrentWindowMode != 1) this->AppWindow().TitleBar().PreferredHeightOption(Microsoft::UI::Windowing::TitleBarHeightOption::Standard);
+            CurrentWindowMode = 1;
+            log << "Window width: " << w << "/" << pw << "/" << windowWidth << ", Window height: " << h << "/" << ph << "/" << windowHeight << ".\n";
+            break;
+        }
+        case (2): {//small & topmost
+            Microsoft::UI::Windowing::CompactOverlayPresenter COPer = Microsoft::UI::Windowing::CompactOverlayPresenter::Create();
+            COPer.InitialSize(Microsoft::UI::Windowing::CompactOverlaySize::Medium);
+            this->AppWindow().SetPresenter(COPer);
+            Windows::Graphics::SizeInt32 wsize = this->AppWindow().Size();
+            Windows::Graphics::PointInt32 wpos = { w - wsize.Width - 50, 50 };
+            this->AppWindow().Move(wpos);
+            CurrentWindowMode = 2;
+            break;
+        }
+        }
+    }
+
+    void MainWindow::windowStartup() {
+        windowSizeChange(1);
         this->ExtendsContentIntoTitleBar(true);
         this->SetTitleBar(AppTitleBar());
+        this->AppWindow().SetIcon(L"Assets/program.ico");
         SpeakTextAsync(L"");
         std::string timeNow = getTime();
         log << "This message is from windowStartup(), current time: " << timeNow << '\n';
-        log << "Window width: " << w << "/" << pw << "/" << windowWidth << ", Window height: " << h << "/" << ph << "/" << windowHeight << ".\n";
         log << "LuckyStudentPicker initialized successfully. \n\n";
     }
 
@@ -246,7 +271,7 @@ namespace winrt::LuckyStudentPicker::implementation
                 int_rpCount_progressing++;
             }
             else {
-                hs = newNameList_rp[int_rpCount_progressing];
+                hs = newNameList_rp[int_rpCount_progressing % arrlen];
                 int_rpCount = 0, int_rpCount_progressing = 0; 
             }
             int_count_repeat++;
@@ -323,5 +348,30 @@ namespace winrt::LuckyStudentPicker::implementation
     void MainWindow::SettingsClick(winrt::Windows::Foundation::IInspectable const&, winrt::Microsoft::UI::Xaml::RoutedEventArgs const&) {
         auto settingsWindow = winrt::LuckyStudentPicker::SettingsWindow();
         settingsWindow.Activate();
+    }
+
+    void MainWindow::WindowCompactOverlayMode(winrt::Windows::Foundation::IInspectable const&, winrt::Microsoft::UI::Xaml::RoutedEventArgs const&) {
+        if (CurrentWindowMode == 2) {
+            windowSizeChange(1);
+            CompactOverlay().Label(L"Compact Overlay Mode");
+            CompactOverlayIcon().Glyph(L"\uEE49");
+            text().FontSize(48);
+            button().Width(230);
+            button().Height(85);
+            buttonText().FontSize(24);
+            buttonGlyph().FontSize(20);
+            log << "LuckyStudentPicker has changed to normal mode. \n";
+        }
+        else {
+            windowSizeChange(2);
+            CompactOverlay().Label(L"Normal Mode");
+            CompactOverlayIcon().Glyph(L"\uEE47");
+            text().FontSize(36);
+            button().Width(200);
+            button().Height(70);
+            buttonText().FontSize(20);
+            buttonGlyph().FontSize(18);
+            log << "LuckyStudentPicker has changed to compact overlay mode. \n";
+        }
     }
 }

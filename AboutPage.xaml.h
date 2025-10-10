@@ -14,6 +14,8 @@ namespace winrt::LuckyStudentPicker::implementation
 
         int32_t MyProperty();
         void MyProperty(int32_t value);
+        fire_and_forget OpenDataFolder(winrt::Windows::Foundation::IInspectable const&, winrt::Microsoft::UI::Xaml::RoutedEventArgs const&);
+        fire_and_forget EditNamelist(winrt::Windows::Foundation::IInspectable const&, winrt::Microsoft::UI::Xaml::RoutedEventArgs const&);
     };
 }
 

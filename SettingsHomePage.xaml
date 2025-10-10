@@ -9,10 +9,28 @@
     mc:Ignorable="d">
 
     <Grid>
-        <TextBlock Text="Lucky Student Picker Settings" Style="{ThemeResource TitleTextBlockStyle}" Margin="20,20,20,0" />
+        <TextBlock Text="Lucky Student Picker Settings" Style="{ThemeResource TitleTextBlockStyle}" Margin="36,36,20,0" />
+        <!--<StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="36,108,36,36">
+            <Border Padding="20" CornerRadius="{StaticResource OverlayCornerRadius}" Width="Auto" Height="100" BorderThickness="1" BorderBrush="{ThemeResource SurfaceStrokeColorDefaultBrush}"
+                Background="{ThemeResource CardBackgroundFillColorDefault}" Margin="0,0,0,8">
+
+            </Border>
+            <Button HorizontalAlignment="Stretch" Width="Auto" Height="100" HorizontalContentAlignment="Left">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="16,0,0,0">
+                    <FontIcon Glyph="&#xE771;" FontSize="48" Foreground="{StaticResource AccentAAFillColorDefaultBrush}" />
+                    <StackPanel Orientation="Vertical" Margin="12,0,0,0">
+                        <TextBlock Text="Appearance" FontSize="24" FontFamily="Segoe UI Variable" FontWeight="SemiBold" Margin="0,0,0,12"/>
+                        <TextBlock Text="Controls the appearance of the app." />
+                    </StackPanel>
+                </StackPanel>
+            </Button>
+        </StackPanel>-->
         <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
             <FontIcon Glyph="&#xE822;" FontSize="48" Margin="0, 0, 16, 0"></FontIcon>
-            <TextBlock Text="This page is under construction. " FontSize="24"></TextBlock>
+            <TextBlock Text="This page is under construction. 🤔" FontSize="24" Margin="0,16,0,16"></TextBlock>
+            <!--<TextBlock Text="Please wait PATIENTLY..." FontSize="8" HorizontalTextAlignment="Center"/>
+            <ProgressRing />a useless progress ring-->
         </StackPanel>
+
     </Grid>
 </Page>
