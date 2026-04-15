@@ -1,0 +1,9 @@
+namespace LuckyStudentPicker
+{
+    [default_interface]
+    runtimeclass NamelistTroubleshootingWindow : Microsoft.UI.Xaml.Window
+    {
+        NamelistTroubleshootingWindow();
+        Int32 MyProperty;
+    }
+}

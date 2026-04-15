@@ -11,8 +11,6 @@
     <Grid>
         <TextBlock Text="About" Style="{ThemeResource TitleTextBlockStyle}" Margin="36,36,20,0" Grid.Row="0"/>
         <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" VerticalAlignment="Top" Grid.Row="1" Margin="36, 84, 36, 0">
-            <!--<TextBlock Text="LuckyStudentPicker v1.3.2.0" FontSize="18" FontWeight="Bold" VerticalAlignment="Center"></TextBlock>
-            -->
             <InfoBar IsOpen="True" IsClosable="False" Severity="Warning" Title="Notice" Message="This page is half completed and some of its functions might be moved to another pages in the future."></InfoBar>
             <Expander IsExpanded="False" ExpandDirection="Down" HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" Margin="0,16,0,16">
                 <Expander.Header>
@@ -25,13 +23,19 @@
                     <StackPanel Orientation="Vertical">
                         <TextBlock Text="Version" FontSize="16" FontWeight="Bold"></TextBlock>
                         <StackPanel Orientation="Vertical" Margin="16,0,0,0">
-                            <TextBlock Text="Version 1.3.3.0"></TextBlock>
-                            <TextBlock Text="Build date: 2025.10.10"></TextBlock>
+                            <TextBlock Text="Version 1.4.0.0"></TextBlock>
+                            <TextBlock Text="Build date: 2026.3.14"></TextBlock>
+                            <TextBlock Text="LuckyStudentPicker 1st anniversary! " FontWeight="SemiBold" Foreground="{ThemeResource AccentAAFillColorDefaultBrush}"></TextBlock>
                         </StackPanel>
                         <TextBlock Text="What's New" FontSize="16" FontWeight="Bold"></TextBlock>
                         <StackPanel Orientation="Vertical" Margin="16,0,0,0">
-                            <TextBlock Text="- Optimized display effects of Compact Overlay Mode. "></TextBlock>
-                            <TextBlock Text="- Updated the About Page in Settings window. "></TextBlock>
+                            <TextBlock Text="+ Added a seat arranger (beta)"></TextBlock>
+                            <TextBlock Text="+ Added a namelist troubleshooting window"></TextBlock>
+                        </StackPanel>
+                        <TextBlock Text="New feature to be added" FontSize="16" FontWeight="Bold"></TextBlock>
+                        <StackPanel Orientation="Vertical" Margin="16,0,0,0">
+                            <TextBlock Text="- Seat arranger improvement"></TextBlock>
+                            <TextBlock Text="- Integrate namelist configuration into namelist troubleshooting window"></TextBlock>
                         </StackPanel>
                         <TextBlock Text="Github repository" FontSize="16" FontWeight="Bold"></TextBlock>
                         <HyperlinkButton Margin="6,0,0,0" Content="Click here to visit Github" NavigateUri="https://github.com/Mike825/LuckyStudentPicker"></HyperlinkButton>

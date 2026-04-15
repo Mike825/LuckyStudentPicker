@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Window
+    x:Class="LuckyStudentPicker.SeatArrangerWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:LuckyStudentPicker"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Title="Seat Arranger"
+    >
+    
+    <Window.SystemBackdrop>
+        <MicaBackdrop />
+    </Window.SystemBackdrop>
+
+    <Grid Loaded="Grid_Loaded">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Title Bar -->
+        <Grid x:Name="SeatArrangerWindowTitleBar" Grid.Row="0">
+            
+            <Image Source="/Assets/program.ico"
+                   HorizontalAlignment="Left"
+                   VerticalAlignment="Top"
+                   Width="20" Height="20"
+                   Margin="16, 16"
+                   Grid.Column="0"/>
+
+            <TextBlock x:Name="AppTitleTextBlock" Text="Seat Arranger"
+                       TextWrapping="NoWrap"
+                       FontSize="20"
+                       VerticalAlignment="Top"
+                       Margin="48, 10, 28, 28"
+                       Grid.Column="1"/>
+        </Grid>
+        
+        <!-- Main Content -->
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+            <StackPanel Margin="20" Spacing="50" Orientation="Horizontal" HorizontalAlignment="Center">
+                <!-- Header 
+                <TextBlock Text="🎲 Seat Arranger"
+                           FontSize="32"
+                           FontWeight="SemiBold"
+                           HorizontalAlignment="Center"
+                           Margin="0,10,0,20">
+                    <TextBlock.Foreground>
+                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                            <GradientStop Color="#667eea" Offset="0"/>
+                            <GradientStop Color="#764ba2" Offset="1"/>
+                        </LinearGradientBrush>
+                    </TextBlock.Foreground>
+                </TextBlock>-->
+
+                <!-- Controls -->
+                
+
+                <!-- Seat Grid -->
+
+                <SplitView x:Name="SeatArrangerSplitView" IsPaneOpen="True" OpenPaneLength="350" DisplayMode="Overlay" PaneBackground="{ThemeResource SystemControlChromeMediumAcrylicElementMediumBrush}" CornerRadius="24">
+                    <SplitView.Pane>
+                        <StackPanel Orientation="Vertical">
+                            <TextBlock Text="Seat Arranger Information" FontSize="20" FontWeight="SemiBold" Margin="20, 20, 20, 20" HorizontalAlignment="Center"></TextBlock>
+                            <FontIcon Glyph="&#xE98F;" FontSize="48" Margin="10, 10, 10, 10"></FontIcon>
+                            <TextBlock Text="Under construction..." HorizontalAlignment="Center"></TextBlock>
+                        </StackPanel>
+                    </SplitView.Pane>
+                    
+                    <Grid Name="SeatGrid"
+                          HorizontalAlignment="Center"
+                          Margin="0,20,0,0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                    </Grid>
+
+                </SplitView>
+
+                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="10" Orientation="Vertical">
+                    <Button Name="RandomizeButton"
+                            Content="🎲 Randomize"
+                            Click="RandomizeButton_Click"
+                            Style="{StaticResource AccentButtonStyle}"
+                            Width="180"
+                            Padding="20,12"
+                            FontSize="16"
+                            FontWeight="SemiBold">
+                            <Button.Resources>
+                                <ResourceDictionary>
+                                    <ResourceDictionary.ThemeDictionaries>
+                                        <ResourceDictionary x:Key="Default">
+                                            <SolidColorBrush x:Key="AccentButtonBackground" Color="#667eea"/>
+                                            <SolidColorBrush x:Key="AccentButtonBackgroundPointerOver" Color="#5a6fd8"/>
+                                            <SolidColorBrush x:Key="AccentButtonBackgroundPressed" Color="#4e63c6"/>
+                                        </ResourceDictionary>
+                                    </ResourceDictionary.ThemeDictionaries>
+                                </ResourceDictionary>
+                            </Button.Resources>
+                    </Button>
+
+                    <Button Name="CaptureButton"
+                            Click="CaptureButton_Click"
+                            Padding="20, 12"
+                            Width="180"
+                            FontSize="16"
+                            FontWeight="SemiBold"
+                            IsEnabled="False"
+                            ToolTipService.ToolTip="Development in progress...">
+                            <Button.Content>
+                                <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="📸 Capture" FontSize="16" FontWeight="SemiBold"></TextBlock>
+                                </StackPanel>
+                            </Button.Content>
+                    </Button>
+
+                    <Button Name="InformationButton"
+                            Click="InformationButton_Click"
+                            Padding="20, 12"
+                            Width="180">
+                        <Button.Content>
+                            <TextBlock Text="📝 Information" FontSize="16" FontWeight="SemiBold"></TextBlock>
+                        </Button.Content>
+                    </Button>
+                </StackPanel>
+
+                <!-- Info Panel
+                <Border Background="{ThemeResource CardBackgroundFillColorDefault}"
+                        BorderBrush="{ThemeResource CardStrokeColorDefault}"
+                        BorderThickness="1"
+                        CornerRadius="8"
+                        Padding="20"
+                        Margin="0,20,0,0">
+                    <StackPanel>
+                        <TextBlock Text="📋 About"
+                                   FontSize="18"
+                                   FontWeight="SemiBold"
+                                   Margin="0,0,0,10"/>
+                        <TextBlock Text="Seat Arranger v1.1.0 Build 2 2025/12/1"
+                                   TextWrapping="Wrap"
+                                   Margin="0,0,0,5"/>
+                        <TextBlock Text="A component of Lucky Student Picker project"
+                                   TextWrapping="Wrap"
+                                   Margin="0,0,0,5"/>
+                        <TextBlock Text="Produced by Kimi, lsr"
+                                   TextWrapping="Wrap"/>
+                    </StackPanel>
+                </Border> -->
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</Window>

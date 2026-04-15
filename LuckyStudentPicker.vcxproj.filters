@@ -95,5 +95,7 @@
     <Page Include="SettingsWindow.xaml" />
     <Page Include="SettingsHomePage.xaml" />
     <Page Include="AboutPage.xaml" />
+    <Page Include="SeatArrangerWindow.xaml" />
+    <Page Include="NamelistTroubleshootingWindow.xaml" />
   </ItemGroup>
 </Project>

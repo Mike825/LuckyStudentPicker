@@ -8,7 +8,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:a="using:Windows.UI.Xaml.Controls" 
     mc:Ignorable="d"
-    Title="LuckyStudentPicker"
+    Title="Lucky Student Picker"
     Closed="Window_Closed"
     >
     <Window.SystemBackdrop>
@@ -81,6 +81,16 @@
                 <AppBarButton Name="CompactOverlay" Label="Compact Overlay Mode" Click="WindowCompactOverlayMode">
                     <AppBarButton.Icon>
                         <FontIcon Name="CompactOverlayIcon" Glyph="&#xEE49;"></FontIcon>
+                    </AppBarButton.Icon>
+                </AppBarButton>
+                <AppBarButton Label="Seat Arranger" Click="SeatArrangerClick">
+                    <AppBarButton.Icon>
+                        <FontIcon Glyph="&#xE8B3;" />
+                    </AppBarButton.Icon>
+                </AppBarButton>
+                <AppBarButton Label="Reload Namelist" Click="ReloadNamelist_Click">
+                    <AppBarButton.Icon>
+                        <FontIcon Glyph="&#xE72C;" />
                     </AppBarButton.Icon>
                 </AppBarButton>
             </CommandBar.SecondaryCommands>
