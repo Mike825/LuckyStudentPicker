@@ -25,7 +25,7 @@ namespace winrt::LuckyStudentPicker::implementation
         
         
         // Event handlers
-        void RandomizeButton_Click(winrt::Windows::Foundation::IInspectable const& sender, winrt::Microsoft::UI::Xaml::RoutedEventArgs const& e);
+        winrt::Windows::Foundation::IAsyncAction RandomizeButton_Click(winrt::Windows::Foundation::IInspectable const& sender, winrt::Microsoft::UI::Xaml::RoutedEventArgs const& e);
         
         winrt::Microsoft::UI::Xaml::Controls::Grid CreateSeatControl(int row, int col, bool isEmpty, hstring sname);
         
@@ -71,7 +71,7 @@ namespace winrt::LuckyStudentPicker::implementation
 
         // Helper methods
         void InitializeSeatGrid();
-        void RandomAssignSeats();
+        //void RandomAssignSeats();
         
         /*void SwapSeats(int sourceIndex, int targetIndex);
         void AnimateSeatChange(winrt::Microsoft::UI::Xaml::Controls::Grid const& seat,

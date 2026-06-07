@@ -53,21 +53,44 @@
                 </StackPanel>
             </CommandBar.Content>
             <!--Buttons-->
-            <AppBarButton Icon="Refresh" Label="Restore" Name="Restore" Click="reset" IsCompact="True"></AppBarButton>
+            <AppBarButton Icon="Refresh" Label="Restore" Name="Restore" IsCompact="True">
+                <AppBarButton.Flyout>
+                    <MenuFlyout>
+                        <MenuFlyoutItem Text="Reset" Click="reset"></MenuFlyoutItem>
+                        <MenuFlyoutItem Text="Reload Namelist" Click="ReloadNamelist_Click"></MenuFlyoutItem>
+                    </MenuFlyout>
+                </AppBarButton.Flyout>
+            </AppBarButton>
             <AppBarToggleButton Icon="Volume" Label="Sound" Name="Sound" IsChecked="True" Checked="IsSoundOn" Unchecked="IsSoundOff" IsCompact="True"/>
             <AppBarToggleButton Icon="RepeatAll" Label="Repeat" Name="Repeat" Checked="IsRepeated" Unchecked="IsNotRepeated" IsCompact="True"/>
             <AppBarButton Icon="Edit" Label="Edit" Click="EditClick"></AppBarButton>
             <!--Folded entries-->
             <CommandBar.SecondaryCommands>
                 <!--Show logs-->
-                <AppBarButton Label="Logs">
+                <AppBarButton Label="Utilities">
                     <AppBarButton.Icon>
-                        <FontIcon Glyph="&#xF57E;"></FontIcon>
+                        <FontIcon Glyph="&#xE8F1;"></FontIcon>
                     </AppBarButton.Icon>
                     <AppBarButton.Flyout>
                         <MenuFlyout>
-                            <MenuFlyoutItem Text="Open logs" Icon="OpenFile" Click="Showlogs"></MenuFlyoutItem>
-                            <MenuFlyoutItem Text="Clear logs" Icon="Delete" Click="Clearlogs"></MenuFlyoutItem>
+                            <MenuFlyoutSubItem Text="Logs">
+                                <MenuFlyoutSubItem.Icon>
+                                    <FontIcon Glyph="&#xF57E;"></FontIcon>
+                                </MenuFlyoutSubItem.Icon>
+                                <MenuFlyoutItem Text="Open logs" Icon="OpenFile" Click="Showlogs"></MenuFlyoutItem>
+                                <MenuFlyoutItem Text="Clear logs" Icon="Delete" Click="Clearlogs"></MenuFlyoutItem>
+                            </MenuFlyoutSubItem>
+                            <MenuFlyoutItem Text="Settings" Icon="Setting" Click="SettingsClick"></MenuFlyoutItem>
+                            <MenuFlyoutItem Name="CompactOverlay" Text="Compact Overlay Mode" Click="WindowCompactOverlayMode">
+                                <MenuFlyoutItem.Icon>
+                                    <FontIcon Name="CompactOverlayIcon" Glyph="&#xEE49;"></FontIcon>
+                                </MenuFlyoutItem.Icon>
+                            </MenuFlyoutItem>
+                            <MenuFlyoutItem Text="Seat Arranger" Click="SeatArrangerClick">
+                                <MenuFlyoutItem.Icon>
+                                    <FontIcon Glyph="&#xE8B3;" />
+                                </MenuFlyoutItem.Icon>
+                            </MenuFlyoutItem>
                         </MenuFlyout>
                     </AppBarButton.Flyout>
                 </AppBarButton>
@@ -77,22 +100,6 @@
                         <FontIcon Glyph="&#xE72E;"></FontIcon>
                     </AppBarToggleButton.Icon>
                 </AppBarToggleButton>
-                <AppBarButton Label="Settings" Icon="Setting" Click="SettingsClick"></AppBarButton>
-                <AppBarButton Name="CompactOverlay" Label="Compact Overlay Mode" Click="WindowCompactOverlayMode">
-                    <AppBarButton.Icon>
-                        <FontIcon Name="CompactOverlayIcon" Glyph="&#xEE49;"></FontIcon>
-                    </AppBarButton.Icon>
-                </AppBarButton>
-                <AppBarButton Label="Seat Arranger" Click="SeatArrangerClick">
-                    <AppBarButton.Icon>
-                        <FontIcon Glyph="&#xE8B3;" />
-                    </AppBarButton.Icon>
-                </AppBarButton>
-                <AppBarButton Label="Reload Namelist" Click="ReloadNamelist_Click">
-                    <AppBarButton.Icon>
-                        <FontIcon Glyph="&#xE72C;" />
-                    </AppBarButton.Icon>
-                </AppBarButton>
             </CommandBar.SecondaryCommands>
         </CommandBar>
 
@@ -112,20 +119,5 @@
                 </StackPanel>
             </Button>
         </StackPanel>
-        
-        <!--Status Bar
-        <Border x:Name="StatusBarBorder" Background="{StaticResource AcrylicInAppFillColorBaseBrush}" Height="20" VerticalAlignment="Bottom" Grid.Row="1">
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="20,0,0,0">
-                <TextBlock Name="RandomMode" Text="Sequence Mode" Style="{StaticResource CaptionTextBlockStyle}" FontSize="12" Foreground="{ThemeResource AccentAAFillColorDisabledBrush}"></TextBlock>
-                <AppBarSeparator Margin="10,0,10,0" />
-                <TextBlock Name="TotalNamesCount" Text="7" Style="{StaticResource CaptionTextBlockStyle}" FontSize="12" Foreground="{ThemeResource AccentAAFillColorDisabledBrush}"></TextBlock>
-                <TextBlock Text=" counted" Style="{StaticResource CaptionTextBlockStyle}" FontSize="12" Foreground="{ThemeResource AccentAAFillColorDisabledBrush}"></TextBlock>
-                <AppBarSeparator Margin="10,0,10,0" />
-                <TextBlock Text="Sound" Style="{StaticResource CaptionTextBlockStyle}" FontSize="12" Foreground="{ThemeResource AccentAAFillColorDisabledBrush}"></TextBlock>
-                <TextBlock Name="SoundStatusIndicator" Text=" on" Style="{StaticResource CaptionTextBlockStyle}" FontSize="12" Foreground="{ThemeResource AccentAAFillColorDisabledBrush}"></TextBlock>
-                <AppBarSeparator Margin="10,0,10,0" />
-                <TextBlock Name="LogIndicator" Text="Logging" Style="{StaticResource CaptionTextBlockStyle}" FontSize="12" Foreground="{ThemeResource AccentAAFillColorDisabledBrush}"></TextBlock>
-            </StackPanel>
-        </Border>-->
     </Grid>
 </Window>

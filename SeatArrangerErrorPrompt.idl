@@ -1,0 +1,9 @@
+namespace LuckyStudentPicker
+{
+    [default_interface]
+    runtimeclass SeatArrangerErrorPrompt : Microsoft.UI.Xaml.Controls.ContentDialog
+    {
+        SeatArrangerErrorPrompt();
+        Int32 MyProperty;
+    }
+}

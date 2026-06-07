@@ -13,9 +13,13 @@
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
     <ClCompile Include="$(GeneratedFilesDir)module.g.cpp" />
+    <ClCompile Include="LoggingHelper.cpp" />
+    <ClCompile Include="NamelistHelper.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
+    <ClInclude Include="LoggingHelper.h" />
+    <ClInclude Include="NamelistHelper.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Assets\BadgeLogo.scale-100.png" />
@@ -81,13 +85,14 @@
   </ItemGroup>
   <ItemGroup>
     <Midl Include="EditTextDialog.idl" />
+    <Midl Include="SeatArrangerErrorPrompt.idl" />
   </ItemGroup>
   <ItemGroup>
     <None Include="LuckyStudentPicker_TemporaryKey.pfx" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="readme.txt" />
+    <Text Include="readme.md" />
   </ItemGroup>
   <ItemGroup>
     <Page Include="EditTextDialog.xaml" />
@@ -97,5 +102,6 @@
     <Page Include="AboutPage.xaml" />
     <Page Include="SeatArrangerWindow.xaml" />
     <Page Include="NamelistTroubleshootingWindow.xaml" />
+    <Page Include="SeatArrangerErrorPrompt.xaml" />
   </ItemGroup>
 </Project>

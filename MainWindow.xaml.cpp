@@ -9,6 +9,7 @@
 #include <random>
 #include <ctime>
 #include <fstream>
+#include <sstream>
 #include <chrono>
 #include <vector>
 #include <numeric>
@@ -25,6 +26,8 @@
 #include <winrt/Microsoft.UI.Dispatching.h>
 #include "EditTextDialog.xaml.h"
 #include "nlohmann/json.hpp"
+#include "LoggingHelper.h"
+#include "NamelistHelper.h"
 
 using namespace winrt;
 using namespace Microsoft::UI::Xaml;
@@ -35,7 +38,7 @@ using namespace Windows::Media::Core;
 using namespace Windows::Media::Playback;
 using namespace Microsoft::UI::Dispatching;
 using namespace Windows::UI::Xaml::Controls;
-using json = nlohmann::json;
+/*using json = nlohmann::json;
 
 namespace nlohmann {
     template <>
@@ -44,7 +47,7 @@ namespace nlohmann {
             return winrt::to_hstring(j.get<std::string>());
         }
     };
-}
+}*/
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -61,48 +64,14 @@ namespace winrt::LuckyStudentPicker::implementation
         throw hresult_not_implemented();
     }
     
-    /* ====== Writing Logs & get time ======*/
     
 
-    bool isNamelistWrong = false; 
-    winrt::Windows::Storage::StorageFolder appDataFolder = winrt::Windows::Storage::ApplicationData::Current().LocalFolder();
-    hstring folderName = L"LuckyStudentPicker";
-    winrt::Windows::Storage::StorageFolder newFolder = appDataFolder.CreateFolderAsync(folderName, winrt::Windows::Storage::CreationCollisionOption::OpenIfExists).get();
-    hstring fileName = L"\\UnluckyStudentLog.log";
-    hstring fLocation = newFolder.Path() + fileName;
-    std::ofstream log(winrt::to_string(fLocation).c_str(), std::ios::out | std::ios::app);
-    hstring nameListFileName = L"\\UnluckyStudentsNameList.json";
-    hstring nameListFileLocation = newFolder.Path() + nameListFileName;
-    std::vector<hstring> load_hstring(hstring fpath) {
-        try {
-            std::ifstream f(to_string(fpath));
-            json j;
-            f >> j;
-            return j.get<std::vector<winrt::hstring>>();
-        }
-        catch (...) {
-            isNamelistWrong = true;
-            std::vector<hstring> r = { L"" };
-            return r;
-        }
-    }
-
-    std::string getTime() {
-        auto now = std::chrono::system_clock::now();
-        std::time_t timeNow = std::chrono::system_clock::to_time_t(now);
-        char dt[66];
-        ctime_s(dt, sizeof(dt), &timeNow);
-        std::string rtime = dt;
-        rtime.erase(rtime.end() - 1);
-        return rtime;
-    }
-
     /* ====== Defining variables ======*/
-    std::vector<hstring> orgNameList = load_hstring(nameListFileLocation);
+    std::vector<hstring> orgNameList;
     int int_count = 0, int_rnum = 0, int_rpCount = 0, int_rpCount_progressing = 0, int_rp_random_index = 0, arrlen = orgNameList.size();
     std::vector<hstring> newNameList, newNameList_rp;
     long long int_count_repeat = 0;
-
+    bool isNamelistWrong = false; 
     static std::mt19937 gen(std::random_device{}());
     std::vector<int> rnumList, l1;
 
@@ -126,7 +95,9 @@ namespace winrt::LuckyStudentPicker::implementation
 
         }
         catch (const hresult_error& ex) {
-            OutputDebugString(ex.message().c_str());
+            std::stringstream log;
+            log << "[MainWindow.SpeakTextAsync()]\tError: " << to_string(ex.message()) << '.\n';
+            LoggingHelper::Instance().WriteLog(log);
         }
     }
 
@@ -170,7 +141,9 @@ namespace winrt::LuckyStudentPicker::implementation
             this->AppWindow().SetPresenter(Microsoft::UI::Windowing::AppWindowPresenterKind::Overlapped);
             if (CurrentWindowMode != 1) this->AppWindow().TitleBar().PreferredHeightOption(Microsoft::UI::Windowing::TitleBarHeightOption::Standard);
             CurrentWindowMode = 1;
-            log << "Window width: " << w << "/" << pw << "/" << windowWidth << ", Window height: " << h << "/" << ph << "/" << windowHeight << ".\n";
+            std::stringstream log;
+            log << "[MainWindow.windowSizeChange()]\t" << "Window width: " << w << "/" << pw << "/" << windowWidth << ", Window height: " << h << "/" << ph << "/" << windowHeight << ".\n";
+            LoggingHelper::Instance().WriteLog(log);
             break;
         }
         case (2): {//small & topmost
@@ -187,14 +160,19 @@ namespace winrt::LuckyStudentPicker::implementation
     }
 
     void MainWindow::windowStartup() {
+        LoggingHelper::Instance().InitializeLogFile();
+        LoggingHelper::Instance().WriteLog(L"[windowStartup()]\tMainWindow open.\n");
+        NamelistHelper::Instance().InitializeNamelistFile();
         windowSizeChange(1);
         this->ExtendsContentIntoTitleBar(true);
         this->SetTitleBar(AppTitleBar());
         this->AppWindow().SetIcon(L"Assets/program.ico");
         SpeakTextAsync(L"");
-        std::string timeNow = getTime();
-        log << "This message is from windowStartup(), current time: " << timeNow << '\n';
-        log << "LuckyStudentPicker initialized successfully. \n\n";
+        LoggingHelper::Instance().WriteLog(L"[MainWindow.windowStartup()]\tMainWindow initialized successfully.\n");
+        orgNameList = NamelistHelper::Instance().GetNamelist();
+        arrlen = orgNameList.size();
+
+        if (arrlen == 0) isNamelistWrong = true;
     }
 
     /* ====== Controlling sound & repeatition ======*/
@@ -203,17 +181,15 @@ namespace winrt::LuckyStudentPicker::implementation
     void MainWindow::IsSoundOn(winrt::Windows::Foundation::IInspectable const&, winrt::Microsoft::UI::Xaml::RoutedEventArgs const&) { sound = true; }
     void MainWindow::IsRepeated(winrt::Windows::Foundation::IInspectable const&, winrt::Microsoft::UI::Xaml::RoutedEventArgs const&) { repeated = true; NumLeft().Text(L" " + to_hstring(int_count_repeat)); }
     void MainWindow::IsSoundOff(winrt::Windows::Foundation::IInspectable const&, winrt::Microsoft::UI::Xaml::RoutedEventArgs const&) { sound = false; }
-    void MainWindow::IsNotRepeated(winrt::Windows::Foundation::IInspectable const&, winrt::Microsoft::UI::Xaml::RoutedEventArgs const&) { repeated = false; NumLeft().Text(L" " + to_hstring(arrlen - int_count)); }
+    void MainWindow::IsNotRepeated(winrt::Windows::Foundation::IInspectable const&, winrt::Microsoft::UI::Xaml::RoutedEventArgs const&) { repeated = false; NumLeft().Text(L" " + to_hstring(arrlen - int_count - 1)); }
     void MainWindow::LockDownText(winrt::Windows::Foundation::IInspectable const&, winrt::Microsoft::UI::Xaml::RoutedEventArgs const&) { button().IsEnabled(false); }
     void MainWindow::UnlockText(winrt::Windows::Foundation::IInspectable const&, winrt::Microsoft::UI::Xaml::RoutedEventArgs const&) { button().IsEnabled(true); }
     void MainWindow::Showlogs(winrt::Windows::Foundation::IInspectable const&, winrt::Microsoft::UI::Xaml::RoutedEventArgs const&) {
-        log.close();
-        ShellExecuteA(nullptr, "open", winrt::to_string(fLocation).c_str(), 0, nullptr, SW_SHOWNORMAL);
-        log.open(winrt::to_string(fLocation).c_str(), std::ios::out | std::ios::app);
+        LoggingHelper::Instance().Flush();
+        ShellExecuteA(nullptr, "open", winrt::to_string(LoggingHelper::Instance().getLogFile()).c_str(), 0, nullptr, SW_SHOWNORMAL);
     }
     void MainWindow::Clearlogs(winrt::Windows::Foundation::IInspectable const&, winrt::Microsoft::UI::Xaml::RoutedEventArgs const&) {
-        log.close();
-        log.open(winrt::to_string(fLocation).c_str(), std::ios::out);
+        LoggingHelper::Instance().ClearLogFile();
     }
 
     /* ====== Generating randomized names ======*/
@@ -252,13 +228,15 @@ namespace winrt::LuckyStudentPicker::implementation
             else newNameList_rp[i] = orgNameList[rnumList[i]];
         }
         //writing logs
-        log << "This message is from initializeNameList(), current method: " << (repeated ? "Repeat" : "nonRepeat") << ".\n";
+        std::stringstream log;
+        log << "[MainWindow.initializeNameList()]\tCurrent method: " << (repeated ? "Repeat" : "nonRepeat") << "; ";
         log << "Generated namelist: ";
         for (int i = 0; i < arrlen; i++) {
             if (repeated) log << to_string(newNameList_rp[i]) << " ";
             else log << to_string(newNameList[i]) << " ";
         }
-        log << "\nNamelist initialized successfully.\n\n";
+        log << "\tNamelist initialized successfully.\n";
+        LoggingHelper::Instance().WriteLog(log);
     }
 
     hstring randName() {
@@ -266,14 +244,18 @@ namespace winrt::LuckyStudentPicker::implementation
         if (repeated == false) {
             if (int_count == 0) initializeNameList();
             if (int_count <= arrlen - 1) hs = newNameList[int_count], int_count++;
-            else hs = L"点名结束";
+            else hs = L"\u200b点名结束";
         }
         else {
             if (int_rpCount == 0) {
-                log << "This message is from randName(), with method Repeat.\n";
-                int_rpCount = randNum(10, 18, 1);
+                std::stringstream log;
+                log << "[MainWindow.randName()]\tMethod Repeat: \t";
+                if (arrlen > 7) int_rpCount = randNum(arrlen / 4 * 3, arrlen - 1, 1);
+                else if (arrlen > 2 && arrlen <= 7) int_rpCount = randNum(arrlen / 2, arrlen - 1, 1);
+                else int_rpCount = randNum(0, arrlen, 1);
                 int_rp_random_index = randNum(0, arrlen - 1, 0); 
-                log << "Reconstruct namelist after: " << int_rpCount << ", index offset: " << int_rp_random_index << ".\nNow calling initializeNameList()...\n";
+                log << "Reconstruct namelist after: " << int_rpCount << ", index offset: " << int_rp_random_index << ".\n";
+                LoggingHelper::Instance().WriteLog(log);
                 initializeNameList();
             }
             if (int_rpCount_progressing < int_rpCount) {
@@ -302,7 +284,7 @@ namespace winrt::LuckyStudentPicker::implementation
         buttonText().Text(L"  开始");
         buttonGlyph().Glyph(L"\uF5B0");
 
-        log << "LuckyStudentPicker has been reset.\n";
+        LoggingHelper::Instance().WriteLog(L"[MainWindow.reset()]\tLuckyStudentPicker was reset. \n");
     }
 
     void MainWindow::updRandName(IInspectable const& sender, RoutedEventArgs const& r) {
@@ -314,7 +296,7 @@ namespace winrt::LuckyStudentPicker::implementation
         else {
             if (!repeated) {
                 hstring rn = randName();
-                if (rn != L"点名结束") {
+                if (rn != L"\u200b点名结束") {
                     if (buttonText().Text() == L"  继续" || buttonText().Text() == L"  开始") buttonText().Text(L"  下一个");
                     buttonGlyph().Glyph(L"\uE72A");
                     text().Text(rn);
@@ -322,6 +304,7 @@ namespace winrt::LuckyStudentPicker::implementation
                     NumLeft().Text(L" " + to_hstring(arrlen - int_count));
                 }
                 else {
+                    NumLeft().Text(L" 0");
                     if (buttonText().Text() == L"  下一个") {
                         text().Text(L"点名结束");
                         text().TextAlignment(winrt::Microsoft::UI::Xaml::TextAlignment::Center);
@@ -332,7 +315,7 @@ namespace winrt::LuckyStudentPicker::implementation
                 }
             }
             else {
-                if (buttonText().Text() == L"  继续" || buttonText().Text() == L"  开始") buttonText().Text(L"  下一个");
+                if (buttonText().Text() == L"  继续" || buttonText().Text() == L"  开始" || buttonText().Text() == L"  重置") buttonText().Text(L"  下一个");
                 buttonGlyph().Glyph(L"\uE72A");
                 text().Text(randName());
                 text().TextAlignment(winrt::Microsoft::UI::Xaml::TextAlignment::Center);
@@ -354,12 +337,14 @@ namespace winrt::LuckyStudentPicker::implementation
             if (sound) SpeakTextAsync(editedText);
             buttonText().Text(L"  继续");
             buttonGlyph().Glyph(L"\uF5B0");
-            log << "Displayed text has been edited: " << to_string(editedText) << ".\n";
+            std::stringstream log;
+            log << "[MainWindow.EditClick()]\tText edited: " << to_string(editedText) << ".\n";
+            LoggingHelper::Instance().WriteLog(log);
         }
     }
 
     void MainWindow::Window_Closed(winrt::Windows::Foundation::IInspectable const&, winrt::Microsoft::UI::Xaml::WindowEventArgs const&) {
-        log << "LuckyStudentPicker.MainWindow is closed, time: " << getTime() << ".\n\n";
+        LoggingHelper::Instance().WriteLog(L"[MainWindow.Window_Closed()]\tWindow closed. \n");
     }
 
     void MainWindow::SettingsClick(winrt::Windows::Foundation::IInspectable const&, winrt::Microsoft::UI::Xaml::RoutedEventArgs const&) {
@@ -370,7 +355,7 @@ namespace winrt::LuckyStudentPicker::implementation
     void MainWindow::WindowCompactOverlayMode(winrt::Windows::Foundation::IInspectable const&, winrt::Microsoft::UI::Xaml::RoutedEventArgs const&) {
         if (CurrentWindowMode == 2) {
             windowSizeChange(1);
-            CompactOverlay().Label(L"Compact Overlay Mode");
+            CompactOverlay().Text(L"Compact Overlay Mode");
             CompactOverlayIcon().Glyph(L"\uEE49");
             text().FontSize(48);
             text().Margin(Microsoft::UI::Xaml::ThicknessHelper::FromLengths(0.0, 12.0, 0.0, 18.0));
@@ -378,11 +363,11 @@ namespace winrt::LuckyStudentPicker::implementation
             button().Height(85);
             buttonText().FontSize(24);
             buttonGlyph().FontSize(20);
-            log << "LuckyStudentPicker has changed to normal mode. \n";
+            LoggingHelper::Instance().WriteLog(L"[MainWindow.WindowCompactOverlayMode()]\tMainWindow has changed to normal mode. \n");
         }
         else {
             windowSizeChange(2);
-            CompactOverlay().Label(L"Normal Mode");
+            CompactOverlay().Text(L"Normal Mode");
             CompactOverlayIcon().Glyph(L"\uEE47");
             text().FontSize(32);
             text().Margin(Microsoft::UI::Xaml::ThicknessHelper::FromLengths(0.0, 12.0, 0.0, 12.0));
@@ -390,7 +375,7 @@ namespace winrt::LuckyStudentPicker::implementation
             button().Height(70);
             buttonText().FontSize(20);
             buttonGlyph().FontSize(18);
-            log << "LuckyStudentPicker has changed to compact overlay mode. \n";
+            LoggingHelper::Instance().WriteLog(L"[MainWindow.WindowCompactOverlayMode()]\tMainWindow has changed to compact overlay mode. \n");
         }
     }
 
@@ -403,8 +388,12 @@ namespace winrt::LuckyStudentPicker::implementation
     void winrt::LuckyStudentPicker::implementation::MainWindow::ReloadNamelist_Click(winrt::Windows::Foundation::IInspectable const& sender, winrt::Microsoft::UI::Xaml::RoutedEventArgs const& e)
     {
         isNamelistWrong = false;
-        orgNameList = load_hstring(nameListFileLocation);
+        orgNameList = NamelistHelper::Instance().GetNamelist();
+        int_count = 0, int_rnum = 0, int_rpCount = 0, int_rpCount_progressing = 0, int_rp_random_index = 0, arrlen = orgNameList.size();
+        int_count_repeat = 0;
+        if (arrlen == 0) isNamelistWrong = true;
         reset(sender, e);
+        LoggingHelper::Instance().WriteLog(L"[MainWindow.ReloadNamelist_Click]\tNamelist reload. \n");
     }
 
 }

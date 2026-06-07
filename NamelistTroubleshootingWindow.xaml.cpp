@@ -10,7 +10,7 @@
 #include <winrt/Windows.Storage.h>
 #include <winrt/Windows.ApplicationModel.DataTransfer.h>
 #include <fstream>
-#include "nlohmann/json.hpp"
+#include "NamelistHelper.h"
 
 using namespace winrt;
 using namespace Microsoft::UI::Xaml;
@@ -18,17 +18,6 @@ using namespace Microsoft::UI::Windowing;
 using namespace Microsoft::UI::Xaml::Controls;
 using namespace Microsoft::UI::Xaml::Media;
 using namespace winrt::Windows::ApplicationModel::DataTransfer;
-using json = nlohmann::json;
-
-namespace nlohmann {
-    template <>
-    struct adl_serializer<winrt::hstring> {
-        static winrt::hstring from_json(const json& j) {
-            return winrt::to_hstring(j.get<std::string>());
-        }
-    };
-}
-
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -81,20 +70,8 @@ void winrt::LuckyStudentPicker::implementation::NamelistTroubleshootingWindow::C
 
 fire_and_forget winrt::LuckyStudentPicker::implementation::NamelistTroubleshootingWindow::TestNamelistButton_Click(winrt::Windows::Foundation::IInspectable const& , winrt::Microsoft::UI::Xaml::RoutedEventArgs const&)
 {
-    bool success = true;
-    try {
-        winrt::Windows::Storage::StorageFolder a = winrt::Windows::Storage::ApplicationData::Current().LocalFolder();
-        hstring fn = L"LuckyStudentPicker";
-        winrt::Windows::Storage::StorageFolder df = co_await a.CreateFolderAsync(fn, winrt::Windows::Storage::CreationCollisionOption::OpenIfExists);
-        winrt::hstring namelist = df.Path() + L"\\UnluckyStudentsNameList.json";
-        std::ifstream f(to_string(namelist));
-        json j;
-        f >> j;
-        j.get<std::vector<winrt::hstring>>();
-    }
-    catch (...) {
-        success = false;
-    }
+    bool success = (NamelistHelper::Instance().GetNamelistLength() == 0 ? true : false);
+    
     if (success) {
         TestGlyph().Glyph(L"\uE8FB");
         auto successBrush = Application::Current().Resources().Lookup(box_value(L"SystemFillColorSuccessBackgroundBrush")).as<Media::Brush>();
@@ -106,6 +83,8 @@ fire_and_forget winrt::LuckyStudentPicker::implementation::NamelistTroubleshooti
         auto failBrush = Application::Current().Resources().Lookup(box_value(L"SystemFillColorCriticalBackgroundBrush")).as<Media::Brush>();
         CloseButton().Background(failBrush);
     }
+
+    co_return;
 }
 
 void winrt::LuckyStudentPicker::implementation::NamelistTroubleshootingWindow::Close_Click(winrt::Windows::Foundation::IInspectable const& , winrt::Microsoft::UI::Xaml::RoutedEventArgs const&)
