@@ -23,6 +23,7 @@
 #include <random>
 #include <sstream>
 #include <chrono>
+#include <iomanip>
 
 #include "NamelistHelper.h"
 #include "SeatArrangerErrorPrompt.xaml.h"

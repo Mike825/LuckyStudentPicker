@@ -1,6 +1,7 @@
 #pragma once
-#include <windows.h>
 #include <unknwn.h>
+#include <winrt/Base.h>
+#include <windows.h>
 #include <restrictederrorinfo.h>
 #include <hstring.h>
 
@@ -25,4 +26,3 @@
 #include <wil/cppwinrt_helpers.h>
 #include <Microsoft.UI.Xaml.Window.h>
 #include <winrt/Windows.Graphics.Display.h>
-#include <winrt/Base.h>

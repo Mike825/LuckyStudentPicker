@@ -80,7 +80,7 @@ IAsyncOperation<bool> CaptureHelper::CaptureWindowToFileAsync(
 
         // Wrap the D3D device for WinRT consumption.
         winrt::com_ptr<IDXGIDevice> dxgiDevice;
-        check_hresult(d3dDevice->QueryInterface(IID_PPV_ARGS(dxgiDevice.put())));
+        check_hresult(d3dDevice->QueryInterface(__uuidof(IDXGIDevice), reinterpret_cast<void**>(dxgiDevice.put())));
         com_ptr<::IInspectable> d3dInspectable;
         check_hresult(CreateDirect3D11DeviceFromDXGIDevice(dxgiDevice.get(), d3dInspectable.put()));
         IDirect3DDevice device = d3dInspectable.as<IDirect3DDevice>();
@@ -117,7 +117,7 @@ IAsyncOperation<bool> CaptureHelper::CaptureWindowToFileAsync(
                 auto surface = frame.Surface();
                 auto access = surface.as<::Windows::Graphics::DirectX::Direct3D11::IDirect3DDxgiInterfaceAccess>();
                 winrt::com_ptr<ID3D11Texture2D> sourceTexture;
-                check_hresult(access->GetInterface(IID_PPV_ARGS(sourceTexture.put())));
+                check_hresult(access->GetInterface(__uuidof(ID3D11Texture2D), reinterpret_cast<void**>(sourceTexture.put())));
 
                 // Create a staging texture that the CPU can read.
                 D3D11_TEXTURE2D_DESC desc{};
