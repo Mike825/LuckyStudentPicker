@@ -36,6 +36,7 @@
     <WindowsTargetPlatformMinVersion>10.0.17763.0</WindowsTargetPlatformMinVersion>
     <UseWinUI>true</UseWinUI>
     <EnableMsixTooling>true</EnableMsixTooling>
+    <CppWinRTFastAbi>false</CppWinRTFastAbi>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <ItemGroup Label="ProjectConfigurations">
@@ -102,6 +103,8 @@
       <LanguageStandard Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">stdcpp23</LanguageStandard>
       <LanguageStandard Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">stdcpp23</LanguageStandard>
       <DebugInformationFormat Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">OldStyle</DebugInformationFormat>
+      <MinimalRebuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</MinimalRebuild>
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)'=='Release'">
@@ -129,6 +132,7 @@
     <ClInclude Include="EditTextDialog.xaml.h">
       <DependentUpon>EditTextDialog.xaml</DependentUpon>
     </ClInclude>
+    <ClInclude Include="CaptureHelper.h" />
     <ClInclude Include="LoggingHelper.h" />
     <ClInclude Include="NamelistHelper.h" />
     <ClInclude Include="NamelistTroubleshootingWindow.xaml.h">
@@ -147,6 +151,18 @@
     </ClInclude>
     <ClInclude Include="SeatArrangerWindow.xaml.h">
       <DependentUpon>SeatArrangerWindow.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </ClInclude>
+    <ClInclude Include="SeatArrangerPage.xaml.h">
+      <DependentUpon>SeatArrangerPage.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </ClInclude>
+    <ClInclude Include="SeatArrangerInformationPage.xaml.h">
+      <DependentUpon>SeatArrangerInformationPage.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </ClInclude>
+    <ClInclude Include="SeatArrangerSettingsPage.xaml.h">
+      <DependentUpon>SeatArrangerSettingsPage.xaml</DependentUpon>
       <SubType>Code</SubType>
     </ClInclude>
     <ClInclude Include="SettingsHomePage.xaml.h">
@@ -176,6 +192,15 @@
     <Page Include="SeatArrangerWindow.xaml">
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="SeatArrangerPage.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="SeatArrangerInformationPage.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="SeatArrangerSettingsPage.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="SettingsHomePage.xaml">
       <SubType>Designer</SubType>
     </Page>
@@ -191,6 +216,7 @@
     <ClCompile Include="EditTextDialog.xaml.cpp">
       <DependentUpon>EditTextDialog.xaml</DependentUpon>
     </ClCompile>
+    <ClCompile Include="CaptureHelper.cpp" />
     <ClCompile Include="LoggingHelper.cpp" />
     <ClCompile Include="NamelistHelper.cpp" />
     <ClCompile Include="NamelistTroubleshootingWindow.xaml.cpp">
@@ -220,6 +246,18 @@
       <DependentUpon>SeatArrangerWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </ClCompile>
+    <ClCompile Include="SeatArrangerPage.xaml.cpp">
+      <DependentUpon>SeatArrangerPage.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </ClCompile>
+    <ClCompile Include="SeatArrangerInformationPage.xaml.cpp">
+      <DependentUpon>SeatArrangerInformationPage.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </ClCompile>
+    <ClCompile Include="SeatArrangerSettingsPage.xaml.cpp">
+      <DependentUpon>SeatArrangerSettingsPage.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </ClCompile>
     <ClCompile Include="SettingsHomePage.xaml.cpp">
       <DependentUpon>SettingsHomePage.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -246,6 +284,18 @@
     <Midl Include="SeatArrangerErrorPrompt.idl" />
     <Midl Include="SeatArrangerWindow.idl">
       <DependentUpon>SeatArrangerWindow.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Midl>
+    <Midl Include="SeatArrangerPage.idl">
+      <DependentUpon>SeatArrangerPage.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Midl>
+    <Midl Include="SeatArrangerInformationPage.idl">
+      <DependentUpon>SeatArrangerInformationPage.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Midl>
+    <Midl Include="SeatArrangerSettingsPage.idl">
+      <DependentUpon>SeatArrangerSettingsPage.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Midl>
     <Midl Include="SettingsHomePage.idl">

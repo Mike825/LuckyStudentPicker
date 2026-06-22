@@ -1,0 +1,9 @@
+namespace LuckyStudentPicker
+{
+    [default_interface]
+    runtimeclass SeatArrangerInformationPage : Microsoft.UI.Xaml.Controls.Page
+    {
+        SeatArrangerInformationPage();
+        Int32 MyProperty;
+    }
+}

@@ -13,11 +13,13 @@
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
     <ClCompile Include="$(GeneratedFilesDir)module.g.cpp" />
+    <ClCompile Include="CaptureHelper.cpp" />
     <ClCompile Include="LoggingHelper.cpp" />
     <ClCompile Include="NamelistHelper.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
+    <ClInclude Include="CaptureHelper.h" />
     <ClInclude Include="LoggingHelper.h" />
     <ClInclude Include="NamelistHelper.h" />
   </ItemGroup>
@@ -86,6 +88,10 @@
   <ItemGroup>
     <Midl Include="EditTextDialog.idl" />
     <Midl Include="SeatArrangerErrorPrompt.idl" />
+    <Midl Include="SeatArrangerWindow.idl" />
+    <Midl Include="SeatArrangerPage.idl" />
+    <Midl Include="SeatArrangerInformationPage.idl" />
+    <Midl Include="SeatArrangerSettingsPage.idl" />
   </ItemGroup>
   <ItemGroup>
     <None Include="LuckyStudentPicker_TemporaryKey.pfx" />
@@ -101,6 +107,9 @@
     <Page Include="SettingsHomePage.xaml" />
     <Page Include="AboutPage.xaml" />
     <Page Include="SeatArrangerWindow.xaml" />
+    <Page Include="SeatArrangerPage.xaml" />
+    <Page Include="SeatArrangerInformationPage.xaml" />
+    <Page Include="SeatArrangerSettingsPage.xaml" />
     <Page Include="NamelistTroubleshootingWindow.xaml" />
     <Page Include="SeatArrangerErrorPrompt.xaml" />
   </ItemGroup>

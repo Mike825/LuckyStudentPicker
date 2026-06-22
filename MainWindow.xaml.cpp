@@ -25,7 +25,6 @@
 #include <winrt/Windows.Media.Playback.h>
 #include <winrt/Microsoft.UI.Dispatching.h>
 #include "EditTextDialog.xaml.h"
-#include "nlohmann/json.hpp"
 #include "LoggingHelper.h"
 #include "NamelistHelper.h"
 
@@ -38,16 +37,6 @@ using namespace Windows::Media::Core;
 using namespace Windows::Media::Playback;
 using namespace Microsoft::UI::Dispatching;
 using namespace Windows::UI::Xaml::Controls;
-/*using json = nlohmann::json;
-
-namespace nlohmann {
-    template <>
-    struct adl_serializer<winrt::hstring> {
-        static winrt::hstring from_json(const json& j) {
-            return winrt::to_hstring(j.get<std::string>());
-        }
-    };
-}*/
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -64,8 +53,6 @@ namespace winrt::LuckyStudentPicker::implementation
         throw hresult_not_implemented();
     }
     
-    
-
     /* ====== Defining variables ======*/
     std::vector<hstring> orgNameList;
     int int_count = 0, int_rnum = 0, int_rpCount = 0, int_rpCount_progressing = 0, int_rp_random_index = 0, arrlen = orgNameList.size();
@@ -395,5 +382,4 @@ namespace winrt::LuckyStudentPicker::implementation
         reset(sender, e);
         LoggingHelper::Instance().WriteLog(L"[MainWindow.ReloadNamelist_Click]\tNamelist reload. \n");
     }
-
 }
