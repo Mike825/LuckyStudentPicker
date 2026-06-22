@@ -23,12 +23,13 @@
                         <StackPanel Orientation="Vertical">
                             <TextBlock Text="Version" FontSize="16" FontWeight="Bold"></TextBlock>
                             <StackPanel Orientation="Vertical" Margin="16,0,0,0">
-                                <TextBlock Text="Version 1.4.2.0"></TextBlock>
-                                <TextBlock Text="Build date: 2026.6.7"></TextBlock>
+                                <TextBlock Text="Version 1.4.3.0"></TextBlock>
+                                <TextBlock Text="Build date: 2026.6.22"></TextBlock>
                             </StackPanel>
                             <TextBlock Text="What's New" FontSize="16" FontWeight="Bold"></TextBlock>
                             <StackPanel Orientation="Vertical" Margin="16,0,0,0">
-                                <TextBlock Text="* Bug fixes"></TextBlock>
+                                <TextBlock Text="+ Seat Arranger capturing ability"></TextBlock>
+                                <TextBlock Text="* Seat Arranger reconstructed using NavigationView"></TextBlock>
                             </StackPanel>
                             <TextBlock Text="New feature to be added" FontSize="16" FontWeight="Bold"></TextBlock>
                             <StackPanel Orientation="Vertical" Margin="16,0,0,0">
