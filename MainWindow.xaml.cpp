@@ -119,30 +119,70 @@ namespace winrt::LuckyStudentPicker::implementation
     void MainWindow::windowSizeChange(int mode) {
         getScreenResolution();
         switch (mode) {
-        case (1): {//normal mode
-            int W = ((int)pw / 4), H = (int)ph / 3;
-            int windowWidth = (W >= 1080) ? 1080 : W, windowHeight = (W >= 720) ? 720 : H;
-            int wCenter = (w - windowWidth) / 2, hCenter = (h - windowHeight) / 2;
-            winrt::Windows::Graphics::RectInt32 windowPos{ wCenter, hCenter, windowWidth, windowHeight };
-            this->AppWindow().MoveAndResize(windowPos);
-            this->AppWindow().SetPresenter(Microsoft::UI::Windowing::AppWindowPresenterKind::Overlapped);
-            if (CurrentWindowMode != 1) this->AppWindow().TitleBar().PreferredHeightOption(Microsoft::UI::Windowing::TitleBarHeightOption::Standard);
-            CurrentWindowMode = 1;
-            std::stringstream log;
-            log << "[MainWindow.windowSizeChange()]\t" << "Window width: " << w << "/" << pw << "/" << windowWidth << ", Window height: " << h << "/" << ph << "/" << windowHeight << ".\n";
-            LoggingHelper::Instance().WriteLog(log);
-            break;
+            case (1): {
+                // normal mode 
+                
+                // Resize window and move to center
+                int W = ((int)pw / 4), H = (int)ph / 3;
+                int windowWidth = (W >= 1080) ? 1080 : W, windowHeight = (W >= 720) ? 720 : H;
+                int wCenter = (w - windowWidth) / 2, hCenter = (h - windowHeight) / 2;
+                winrt::Windows::Graphics::RectInt32 windowPos{ wCenter, hCenter, windowWidth, windowHeight };
+                this->AppWindow().MoveAndResize(windowPos);
+                
+                Microsoft::UI::Windowing::OverlappedPresenter OP = Microsoft::UI::Windowing::OverlappedPresenter::Create();
+                OP.SetBorderAndTitleBar(true, true);
+                OP.PreferredMinimumHeight(H);
+                OP.PreferredMinimumWidth(W);
+                this->AppWindow().SetPresenter(OP);
+                if (CurrentWindowMode != 1) this->AppWindow().TitleBar().PreferredHeightOption(Microsoft::UI::Windowing::TitleBarHeightOption::Standard);
+                CurrentWindowMode = 1;
+                
+                std::stringstream log;
+                log << "[MainWindow.windowSizeChange()]\t" << "Window width: " << w << "/" << pw << "/" << windowWidth << ", Window height: " << h << "/" << ph << "/" << windowHeight << ".\n";
+                LoggingHelper::Instance().WriteLog(log);
+
+                break;
+            }
+            case (2): {
+                // small & topmost
+                Microsoft::UI::Windowing::CompactOverlayPresenter COPer = Microsoft::UI::Windowing::CompactOverlayPresenter::Create();
+                COPer.InitialSize(Microsoft::UI::Windowing::CompactOverlaySize::Medium);
+                this->AppWindow().SetPresenter(COPer);
+
+                Windows::Graphics::SizeInt32 wsize = this->AppWindow().Size();
+                Windows::Graphics::PointInt32 wpos = { w - wsize.Width - 50, 50 };
+                this->AppWindow().Move(wpos);
+                CurrentWindowMode = 2;
+
+                break;
+            }
         }
-        case (2): {//small & topmost
-            Microsoft::UI::Windowing::CompactOverlayPresenter COPer = Microsoft::UI::Windowing::CompactOverlayPresenter::Create();
-            COPer.InitialSize(Microsoft::UI::Windowing::CompactOverlaySize::Medium);
-            this->AppWindow().SetPresenter(COPer);
-            Windows::Graphics::SizeInt32 wsize = this->AppWindow().Size();
-            Windows::Graphics::PointInt32 wpos = { w - wsize.Width - 50, 50 };
-            this->AppWindow().Move(wpos);
-            CurrentWindowMode = 2;
-            break;
+    }
+
+    void MainWindow::WindowCompactOverlayMode(winrt::Windows::Foundation::IInspectable const&, winrt::Microsoft::UI::Xaml::RoutedEventArgs const&) {
+        if (CurrentWindowMode == 2) {
+            windowSizeChange(1);
+            CompactOverlay().Text(L"Compact Overlay Mode");
+            CompactOverlayIcon().Glyph(L"\uEE49");
+            text().FontSize(48);
+            text().Margin(Microsoft::UI::Xaml::ThicknessHelper::FromLengths(0.0, 12.0, 0.0, 18.0));
+            button().Width(230);
+            button().Height(85);
+            buttonText().FontSize(24);
+            buttonGlyph().FontSize(20);
+            LoggingHelper::Instance().WriteLog(L"[MainWindow.WindowCompactOverlayMode()]\tMainWindow has changed to normal mode. \n");
         }
+        else {
+            windowSizeChange(2);
+            CompactOverlay().Text(L"Normal Mode");
+            CompactOverlayIcon().Glyph(L"\uEE47");
+            text().FontSize(32);
+            text().Margin(Microsoft::UI::Xaml::ThicknessHelper::FromLengths(0.0, 12.0, 0.0, 12.0));
+            button().Width(180);
+            button().Height(70);
+            buttonText().FontSize(20);
+            buttonGlyph().FontSize(18);
+            LoggingHelper::Instance().WriteLog(L"[MainWindow.WindowCompactOverlayMode()]\tMainWindow has changed to compact overlay mode. \n");
         }
     }
 
@@ -160,6 +200,10 @@ namespace winrt::LuckyStudentPicker::implementation
         arrlen = orgNameList.size();
 
         if (arrlen == 0) isNamelistWrong = true;
+    }
+
+    void MainWindow::Window_Closed(winrt::Windows::Foundation::IInspectable const&, winrt::Microsoft::UI::Xaml::WindowEventArgs const&) {
+        LoggingHelper::Instance().WriteLog(L"[MainWindow.Window_Closed()]\tWindow closed. \n");
     }
 
     /* ====== Controlling sound & repeatition ======*/
@@ -272,9 +316,22 @@ namespace winrt::LuckyStudentPicker::implementation
         buttonGlyph().Glyph(L"\uF5B0");
 
         LoggingHelper::Instance().WriteLog(L"[MainWindow.reset()]\tLuckyStudentPicker was reset. \n");
+
+        HideButton().IsEnabled(false);
     }
 
-    void MainWindow::updRandName(IInspectable const& sender, RoutedEventArgs const& r) {
+    void winrt::LuckyStudentPicker::implementation::MainWindow::ReloadNamelist_Click(winrt::Windows::Foundation::IInspectable const& sender, winrt::Microsoft::UI::Xaml::RoutedEventArgs const& e)
+    {
+        isNamelistWrong = false;
+        orgNameList = NamelistHelper::Instance().GetNamelist();
+        int_count = 0, int_rnum = 0, int_rpCount = 0, int_rpCount_progressing = 0, int_rp_random_index = 0, arrlen = orgNameList.size();
+        int_count_repeat = 0;
+        if (arrlen == 0) isNamelistWrong = true;
+        reset(sender, e);
+        LoggingHelper::Instance().WriteLog(L"[MainWindow.ReloadNamelist_Click]\tNamelist reload. \n");
+    }
+
+    void MainWindow::updRandName(IInspectable const& sender, RoutedEventArgs const& r) {     
         if (isNamelistWrong) {
             DispatcherQueue::GetForCurrentThread().TryEnqueue([]() {
                 auto namelistTroubleshootingWindow = winrt::LuckyStudentPicker::NamelistTroubleshootingWindow();
@@ -309,7 +366,10 @@ namespace winrt::LuckyStudentPicker::implementation
                 NumLeft().Text(L" " + to_hstring(int_count_repeat));
             }
             if (sound) SpeakTextAsync(text().Text());
-        }
+        }        
+        if (text().Text() == L"") HideButton().IsEnabled(false);
+        else HideButton().IsEnabled(true);
+
     }
     
     winrt::Windows::Foundation::IAsyncAction MainWindow::EditClick(IInspectable const&, RoutedEventArgs const&) {
@@ -330,56 +390,35 @@ namespace winrt::LuckyStudentPicker::implementation
         }
     }
 
-    void MainWindow::Window_Closed(winrt::Windows::Foundation::IInspectable const&, winrt::Microsoft::UI::Xaml::WindowEventArgs const&) {
-        LoggingHelper::Instance().WriteLog(L"[MainWindow.Window_Closed()]\tWindow closed. \n");
-    }
-
     void MainWindow::SettingsClick(winrt::Windows::Foundation::IInspectable const&, winrt::Microsoft::UI::Xaml::RoutedEventArgs const&) {
-        auto settingsWindow = winrt::LuckyStudentPicker::SettingsWindow();
-        settingsWindow.Activate();
-    }
-
-    void MainWindow::WindowCompactOverlayMode(winrt::Windows::Foundation::IInspectable const&, winrt::Microsoft::UI::Xaml::RoutedEventArgs const&) {
-        if (CurrentWindowMode == 2) {
-            windowSizeChange(1);
-            CompactOverlay().Text(L"Compact Overlay Mode");
-            CompactOverlayIcon().Glyph(L"\uEE49");
-            text().FontSize(48);
-            text().Margin(Microsoft::UI::Xaml::ThicknessHelper::FromLengths(0.0, 12.0, 0.0, 18.0));
-            button().Width(230);
-            button().Height(85);
-            buttonText().FontSize(24);
-            buttonGlyph().FontSize(20);
-            LoggingHelper::Instance().WriteLog(L"[MainWindow.WindowCompactOverlayMode()]\tMainWindow has changed to normal mode. \n");
-        }
-        else {
-            windowSizeChange(2);
-            CompactOverlay().Text(L"Normal Mode");
-            CompactOverlayIcon().Glyph(L"\uEE47");
-            text().FontSize(32);
-            text().Margin(Microsoft::UI::Xaml::ThicknessHelper::FromLengths(0.0, 12.0, 0.0, 12.0));
-            button().Width(200);
-            button().Height(70);
-            buttonText().FontSize(20);
-            buttonGlyph().FontSize(18);
-            LoggingHelper::Instance().WriteLog(L"[MainWindow.WindowCompactOverlayMode()]\tMainWindow has changed to compact overlay mode. \n");
-        }
+        DispatcherQueue::GetForCurrentThread().TryEnqueue
+        ([]() 
+            {        
+                auto settingsWindow = winrt::LuckyStudentPicker::SettingsWindow();
+                settingsWindow.Activate();
+            }
+        );
     }
 
     void MainWindow::SeatArrangerClick(winrt::Windows::Foundation::IInspectable const&, winrt::Microsoft::UI::Xaml::RoutedEventArgs const&) {
-        auto seatArrangerWindow = winrt::LuckyStudentPicker::SeatArrangerWindow();
-        seatArrangerWindow.Activate();
-
+        DispatcherQueue::GetForCurrentThread().TryEnqueue
+        ([]()
+            {
+                auto seatArrangerWindow = winrt::LuckyStudentPicker::SeatArrangerWindow();
+                seatArrangerWindow.Activate();
+            }
+        );
     }
     
-    void winrt::LuckyStudentPicker::implementation::MainWindow::ReloadNamelist_Click(winrt::Windows::Foundation::IInspectable const& sender, winrt::Microsoft::UI::Xaml::RoutedEventArgs const& e)
+    void winrt::LuckyStudentPicker::implementation::MainWindow::HideButton_Click(winrt::Windows::Foundation::IInspectable const&, winrt::Microsoft::UI::Xaml::RoutedEventArgs const&)
     {
-        isNamelistWrong = false;
-        orgNameList = NamelistHelper::Instance().GetNamelist();
-        int_count = 0, int_rnum = 0, int_rpCount = 0, int_rpCount_progressing = 0, int_rp_random_index = 0, arrlen = orgNameList.size();
-        int_count_repeat = 0;
-        if (arrlen == 0) isNamelistWrong = true;
-        reset(sender, e);
-        LoggingHelper::Instance().WriteLog(L"[MainWindow.ReloadNamelist_Click]\tNamelist reload. \n");
+        button().Visibility(winrt::Microsoft::UI::Xaml::Visibility::Collapsed);
+        ShowButton().IsEnabled(true);
+    }
+
+    void winrt::LuckyStudentPicker::implementation::MainWindow::ShowButton_Click(winrt::Windows::Foundation::IInspectable const&, winrt::Microsoft::UI::Xaml::RoutedEventArgs const&)
+    {
+        button().Visibility(winrt::Microsoft::UI::Xaml::Visibility::Visible);
+        ShowButton().IsEnabled(false);
     }
 }

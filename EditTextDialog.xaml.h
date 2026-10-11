@@ -19,7 +19,7 @@ namespace winrt::LuckyStudentPicker::implementation
 		void MyProperty(int32_t value);
 
 		void ContentDialog_PrimaryButtonClick(winrt::Microsoft::UI::Xaml::Controls::ContentDialog const&, winrt::Microsoft::UI::Xaml::Controls::ContentDialogButtonClickEventArgs const&);
-		//void EditTextDialog::ContentDialog_SecondaryButtonClick(winrt::Microsoft::UI::Xaml::Controls::ContentDialog const&, winrt::Microsoft::UI::Xaml::Controls::ContentDialogButtonClickEventArgs const&);
+		void EditBox_TextChanged(winrt::Windows::Foundation::IInspectable const& sender, winrt::Microsoft::UI::Xaml::Controls::TextChangedEventArgs const& e);
 
 		winrt::hstring InitialText();
 		void InitialText(winrt::hstring const& value);

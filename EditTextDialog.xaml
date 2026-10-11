@@ -13,11 +13,12 @@
     PrimaryButtonClick="ContentDialog_PrimaryButtonClick"
     CornerRadius="8"
     CloseButtonText="Cancel" 
+    IsPrimaryButtonEnabled="False"
     >
     
     <Grid>
         <StackPanel Orientation="Vertical">
-            <TextBox Name="EditBox" MaxLength="5"/>
+            <TextBox Name="EditBox" MaxLength="7" TextChanged="EditBox_TextChanged"/>
         </StackPanel>
     </Grid>
 </ContentDialog>

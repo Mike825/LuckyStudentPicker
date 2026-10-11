@@ -53,12 +53,12 @@
                 </StackPanel>
             </CommandBar.Content>
             <!--Buttons-->
-            <AppBarButton Icon="Refresh" Label="Restore" Name="Restore" IsCompact="True">
-                <AppBarButton.Flyout>
+            <AppBarButton Icon="Refresh" Label="Restore" Name="Restore" Click="reset" IsCompact="True">
+                <AppBarButton.ContextFlyout>
                     <MenuFlyout>
-                        <MenuFlyoutItem Text="Reset" Click="reset"></MenuFlyoutItem>
+                        <MenuFlyoutItem Text="Reload namelist" Click="ReloadNamelist_Click"></MenuFlyoutItem>
                     </MenuFlyout>
-                </AppBarButton.Flyout>
+                </AppBarButton.ContextFlyout>
             </AppBarButton>
             <AppBarToggleButton Icon="Volume" Label="Sound" Name="Sound" IsChecked="True" Checked="IsSoundOn" Unchecked="IsSoundOff" IsCompact="True"/>
             <AppBarToggleButton Icon="RepeatAll" Label="Repeat" Name="Repeat" Checked="IsRepeated" Unchecked="IsNotRepeated" IsCompact="True"/>
@@ -103,15 +103,26 @@
         </CommandBar>
 
         <!--Random Name-->
-        <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="0" Grid.Row="2" Margin="0,0,0,24">
-            <TextBlock Name="text" Text="" FontSize="48" FontWeight="Bold" Margin="0,12,0,18"></TextBlock>
-            <Button Name="button" Click="updRandName" Width="230" Height="80" ToolTipService.ToolTip="Next">
-                <Button.KeyboardAccelerators>
-                    <KeyboardAccelerator Modifiers="None" Key="Down" ></KeyboardAccelerator>
-                    <KeyboardAccelerator Modifiers="None" Key="Up" ></KeyboardAccelerator>
-                    <KeyboardAccelerator Modifiers="None" Key="PageDown"></KeyboardAccelerator>
-                    <KeyboardAccelerator Modifiers="None" Key="PageUp"></KeyboardAccelerator>
-                </Button.KeyboardAccelerators>
+        <Viewbox Stretch="Uniform" StretchDirection="Both" Margin="48,24,48,48"  HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="0" Grid.Row="2">
+            <StackPanel Orientation="Vertical">
+                <TextBlock Name="text" Text="" FontSize="48" FontWeight="Bold" Margin="0,12,0,18">
+                    <TextBlock.ContextFlyout>
+                        <MenuFlyout>
+                            <MenuFlyoutItem Name="ShowButton" Text="Show Button" Click="ShowButton_Click" IsEnabled="False">
+                                <MenuFlyoutItem.Icon>
+                                    <FontIcon Glyph="&#xE7B3;"></FontIcon>
+                                </MenuFlyoutItem.Icon>
+                            </MenuFlyoutItem>
+                        </MenuFlyout>
+                    </TextBlock.ContextFlyout>
+                </TextBlock>
+                <Button Name="button" Click="updRandName" Width="Auto" MinWidth="230" HorizontalAlignment="Stretch" Height="Auto" ToolTipService.ToolTip="Next" Padding="0">
+                    <Button.KeyboardAccelerators>
+                        <KeyboardAccelerator Modifiers="None" Key="Down" ></KeyboardAccelerator>
+                        <KeyboardAccelerator Modifiers="None" Key="Up" ></KeyboardAccelerator>
+                        <KeyboardAccelerator Modifiers="None" Key="PageDown"></KeyboardAccelerator>
+                        <KeyboardAccelerator Modifiers="None" Key="PageUp"></KeyboardAccelerator>
+                    </Button.KeyboardAccelerators>
                     <Button.ContextFlyout>
                         <MenuFlyout>
                             <MenuFlyoutItem Name="HideButton" IsEnabled="False" Text="Hide button" Click="HideButton_Click">
@@ -119,12 +130,14 @@
                                     <FontIcon Glyph="&#xED1A;"></FontIcon>
                                 </MenuFlyoutItem.Icon>
                             </MenuFlyoutItem>
+                        </MenuFlyout>
                     </Button.ContextFlyout>
                     <StackPanel Name ="buttonStack" Orientation="Horizontal" VerticalAlignment="Center" Margin="36,18,36,18">
-                    <FontIcon Name="buttonGlyph" Glyph="&#xF5B0;" FontSize="20" />
-                    <TextBlock Name = "buttonText" Text="  开始" FontSize="24" FontFamily="Microsoft YaHei UI" FontWeight="Light"></TextBlock>
-                </StackPanel>
-            </Button>
-        </StackPanel>
+                        <FontIcon Name="buttonGlyph" Glyph="&#xF5B0;" FontSize="20" />
+                        <TextBlock Name = "buttonText" Text="  开始" FontSize="24" FontFamily="Microsoft YaHei UI" FontWeight="Light"></TextBlock>
+                    </StackPanel>
+                </Button>
+            </StackPanel>            
+        </Viewbox>
     </Grid>
 </Window>

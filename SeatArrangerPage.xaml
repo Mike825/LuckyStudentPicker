@@ -12,7 +12,6 @@
     <Grid Loaded="Grid_Loaded">
         <ScrollViewer VerticalScrollBarVisibility="Auto">
             <StackPanel Orientation="Vertical" Margin="32, 32, 32, 0">
-                <InfoBar IsOpen="True" Severity="Warning" Title="Notice" Message="Capture it before you leave or it will be lost FOREVER. " IsClosable="True"></InfoBar>
                 <StackPanel Margin="20" Spacing="50" Orientation="Horizontal" HorizontalAlignment="Center">
                     <Grid Name="SeatGrid"
                             HorizontalAlignment="Center"
@@ -34,6 +33,7 @@
                     </Grid>
 
                     <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="10" Orientation="Vertical">
+                        <TextBlock Name="RandomizeTimesIndicator" Text="0" FontSize="36" FontWeight="Bold" Margin="0,0,0,16" HorizontalAlignment="Center"></TextBlock>
                         <Button Name="RandomizeButton"
                                 Content="🎲 Randomize"
                                 Click="RandomizeButton_Click"
@@ -53,6 +53,26 @@
                                     </ResourceDictionary.ThemeDictionaries>
                                 </ResourceDictionary>
                             </Button.Resources>
+                            <Button.ContextFlyout>
+                                <Flyout Placement="Top" x:Name="RandomizingTimesFlyout">
+                                    <StackPanel Orientation="Vertical" Spacing="8">
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="Randomize" Margin="0,0,8,0" FontSize="16" VerticalAlignment="Center"></TextBlock>
+                                            <NumberBox Loaded="RandomizingTimes_Loaded" Name="RandomizingTimes" ValidationMode="InvalidInputOverwritten" Value="1" VerticalAlignment="Center" SpinButtonPlacementMode="Hidden" AcceptsExpression="False" SmallChange="1" FontSize="16" FontWeight="SemiBold" FontFamily="Segoe UI Variable Display"></NumberBox>
+                                            <TextBlock Text="times in a row" Margin="8,0,0,0" VerticalAlignment="Center" FontSize="16"></TextBlock>
+                                        </StackPanel>
+                                        <InfoBar IsClosable="False" IsOpen="False" Loaded="RandomizeTimesErrorPrompt_Loaded" Name="RandomizeTimesErrorPrompt" Severity="Error" Title="Error" Message="Please input a valid number (1 ~ 50)"></InfoBar>
+                                    </StackPanel>
+                                </Flyout>
+                            </Button.ContextFlyout>
+                        </Button>
+                        <Button Name="ResetButton"
+                                Click="ResetButton_Click"
+                                Padding="20, 12"
+                                Width="180"
+                                FontSize="16"
+                                FontWeight="SemiBold"
+                                Content="🔄️ Reset">
                         </Button>
                         <Button Name="CaptureButton"
                                 Click="CaptureButton_Click"

@@ -7,6 +7,8 @@
 #include "EditTextDialog.xaml.h"
 #include "EditTextDialog.g.cpp"
 #include <winrt/base.h>
+#include <algorithm>
+#include <cwctype>
 #pragma comment(lib, "windowsapp")
 
 using namespace winrt;
@@ -51,8 +53,14 @@ namespace winrt::LuckyStudentPicker::implementation
         return m_resultText;
     }
     
-    /*void EditTextDialog::ContentDialog_SecondaryButtonClick(winrt::Microsoft::UI::Xaml::Controls::ContentDialog const&, winrt::Microsoft::UI::Xaml::Controls::ContentDialogButtonClickEventArgs const&) {
+    void winrt::LuckyStudentPicker::implementation::EditTextDialog::EditBox_TextChanged(winrt::Windows::Foundation::IInspectable const&, winrt::Microsoft::UI::Xaml::Controls::TextChangedEventArgs const&)
+    {
+        auto const text = EditBox().Text();
+        auto const isBlank = std::all_of(
+            text.begin(),
+            text.end(),
+            [](wchar_t ch) { return std::iswspace(ch) != 0; });
 
-    }*/
+        EditTextDialog::IsPrimaryButtonEnabled(!isBlank);
+    }
 }
-

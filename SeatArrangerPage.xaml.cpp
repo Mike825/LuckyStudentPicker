@@ -18,6 +18,7 @@
 #include <winrt/Microsoft.UI.Text.h>
 #include <winrt/Microsoft.UI.Dispatching.h>
 #include <winrt/Windows.Storage.h>
+#include <winrt/Windows.Globalization.NumberFormatting.h>
 
 #include <algorithm>
 #include <random>
@@ -39,6 +40,7 @@ using namespace Windows::Foundation;
 using namespace Windows::ApplicationModel::DataTransfer;
 using namespace Microsoft::UI;
 using namespace Windows::Storage;
+using namespace Windows::Globalization::NumberFormatting;
 
 
 // To learn more about WinUI, the WinUI project structure,
@@ -59,43 +61,75 @@ namespace winrt::LuckyStudentPicker::implementation
 
     // InitializeSeatGrid: Initialize seat grid (written mostly by Kimi)
     int seatCount = 0;
-    void SeatArrangerPage::InitializeSeatGrid()
-    {
-        SeatGrid().Children().Clear();
-        m_seats.clear();
-
-        seatCount = 0;
+    std::vector<hstring> studentsSeatsCurrent = { };
+    void SeatArrangerPage::InitializeSeatGrid(bool isForced)
+    {            
         int seatIndex = 0;
-        for (int row = 0; row < m_seatLayout.size(); row++) {
-            for (int col = 0; col < m_seatLayout[row].size(); col++) {
-                bool isEmpty = !m_seatLayout[row][col];
-                auto seatControl = CreateSeatControl(row, col, isEmpty, L"");
+        seatCount = 0;
 
-                // Grid placement
-                Grid::SetRow(seatControl, row);
-                Grid::SetColumn(seatControl, col);
-                SeatGrid().Children().Append(seatControl);
+        if (studentsSeatsCurrent.size() == 0 || isForced)
+        {
+            // Clear the SeatGrid()
+            SeatGrid().Children().Clear();
+            m_seats.clear();
+            
+            for (int row = 0; row < m_seatLayout.size(); row++) {
+                for (int col = 0; col < m_seatLayout[row].size(); col++) {
+                    bool isEmpty = !m_seatLayout[row][col];
+                    auto seatControl = CreateSeatControl(row, col, isEmpty, L"");
 
-                if (!isEmpty) {
-                    m_seats.push_back({ seatControl, row, col, L"", false });
-                    seatCount++;
+                    // Grid placement
+                    Grid::SetRow(seatControl, row);
+                    Grid::SetColumn(seatControl, col);
+                    SeatGrid().Children().Append(seatControl);
+
+                    if (!isEmpty) {
+                        m_seats.push_back({ seatControl, row, col, L"", false });
+                        seatCount++;
+                    }
+                    else {
+                        m_seats.push_back({ seatControl, row, col, L"", true });
+                    }
+
+                    seatIndex++; // this "seatIndex" is for all seats
                 }
-                else {
-                    m_seats.push_back({ seatControl, row, col, L"", true });
-                }
+            }
+        }
+        else
+        {
+            // Lay SeatGrid() out in the order of studentsSeatsCurrent
+            for (int row = 0; row < m_seatLayout.size(); row++) {
+                for (int col = 0; col < m_seatLayout[row].size(); col++) {
+                    bool isEmpty = !m_seatLayout[row][col];
 
-                seatIndex++;
+                    winrt::Microsoft::UI::Xaml::Controls::Grid seatControl = nullptr;
+
+                    if (!isEmpty) {                    
+                        seatControl = CreateSeatControl(row, col, isEmpty, studentsSeatsCurrent[seatIndex]);
+                        m_seats.push_back({ seatControl, row, col, studentsSeatsCurrent[seatIndex], false });
+                        seatCount++, seatIndex++; // this "seatIndex" is for "non-empty seats"
+                    }
+                    else {
+                        seatControl = CreateSeatControl(row, col, isEmpty, L"");
+                        m_seats.push_back({ seatControl, row, col, L"", true});
+                    }
+
+                    // Grid placement
+                    Grid::SetRow(seatControl, row);
+                    Grid::SetColumn(seatControl, col);
+                    SeatGrid().Children().Append(seatControl);
+
+                }
             }
         }
     }
 
     // Grid_Loaded: Execute InitializeSeatGrid() when SeatGrid() is ready to avoid crash
-    std::vector<hstring> studentsSeatsCurrent = { };
     void winrt::LuckyStudentPicker::implementation::SeatArrangerPage::Grid_Loaded(winrt::Windows::Foundation::IInspectable const&, winrt::Microsoft::UI::Xaml::RoutedEventArgs const&)
     {
-        if (SeatGrid()) 
+        if (SeatGrid())
         {
-            InitializeSeatGrid();
+            InitializeSeatGrid(false);
         }
     }
 
@@ -108,10 +142,10 @@ namespace winrt::LuckyStudentPicker::implementation
         this->NavigationCacheMode(winrt::Microsoft::UI::Xaml::Navigation::NavigationCacheMode::Enabled);
     }
 
-    //CreateSeatControl: Create a single seat
+    // CreateSeatControl: Create a single seat
     winrt::Microsoft::UI::Xaml::Controls::Grid SeatArrangerPage::CreateSeatControl(int row, int col, bool isEmpty, hstring sname)
     {
-        //Basic settings
+        // Basic settings
         auto seat = Grid();
         seat.Width(150);
         seat.Height(100);
@@ -140,7 +174,7 @@ namespace winrt::LuckyStudentPicker::implementation
         }
         else {
 
-            //Settings for normal seats
+            // Settings for normal seats
 
             // Numbering
             auto seatNumber = TextBlock();
@@ -181,29 +215,73 @@ namespace winrt::LuckyStudentPicker::implementation
             co_return;
         }
 
-        // Sort students randomly
-        auto shuffledStudents = NamelistHelper::Instance().GetNamelist();
-        std::shuffle(shuffledStudents.begin(), shuffledStudents.end(), std::mt19937(std::random_device{}()));
-
-        // Assign students to seats
-        int currentEmptyCount = 0;
-        for (int i = 0; i < m_seats.size(); i++) {
-            if (!(m_seats[i].isEmpty))
-            {
-                m_seats[i].studentName = shuffledStudents[i - currentEmptyCount];
-                m_seats[i].seatElement = CreateSeatControl(m_seats[i].row, m_seats[i].col, false, m_seats[i].studentName);
-            }
-            else
-            {
-                m_seats[i].seatElement = CreateSeatControl(m_seats[i].row, m_seats[i].col, true, L"");
-                currentEmptyCount++;
-            }
-            Grid::SetRow(m_seats[i].seatElement, m_seats[i].row);
-            Grid::SetColumn(m_seats[i].seatElement, m_seats[i].col);
-            SeatGrid().Children().SetAt(i, m_seats[i].seatElement); 
+        // Constraints about randomize times
+        auto value = RandomizingTimes().Value();
+        if (value > 50 || value <= 0)
+        {
+            RandomizingTimesFlyout().ShowAt(RandomizeButton());
+            co_return;
         }
+        
+        // Randomize
+        auto shuffledStudents = NamelistHelper::Instance().GetNamelist();
+        int currentTimes = 0, waitMilliseconds = 50;
 
-        studentsSeatsCurrent = shuffledStudents;
+        winrt::Microsoft::UI::Xaml::DispatcherTimer DT = winrt::Microsoft::UI::Xaml::DispatcherTimer();
+        DT.Interval(std::chrono::milliseconds(150));
+
+        DT.Tick
+        ([this, currentTimes, value, shuffledStudents, DT, waitMilliseconds](auto&, auto&) mutable
+            {
+                if (currentTimes < value) 
+                {
+                    // Prevent user from hitting the button for too many times 
+                    RandomizeButton().IsEnabled(false);
+
+                    // Update randomize times indicator
+                    RandomizeTimesIndicator().Text(to_hstring(currentTimes + 1));
+
+                    // Determine how long should each tick wait
+                    if (currentTimes <= value * 0.3) waitMilliseconds = 50;
+                    else if (currentTimes <= value * 0.6) waitMilliseconds = 100;
+                    else if (currentTimes <= value * 0.8) waitMilliseconds = 150;
+                    else waitMilliseconds = 200;
+
+                    DT.Interval(std::chrono::milliseconds(waitMilliseconds));
+
+                    // Sort students randomly
+                    std::shuffle(shuffledStudents.begin(), shuffledStudents.end(), std::mt19937(std::random_device{}()));
+
+                    // Assign students to seats
+                    int currentEmptyCount = 0;
+                    for (int i = 0; i < m_seats.size(); i++) {
+                        if (!(m_seats[i].isEmpty))
+                        {
+                            m_seats[i].studentName = shuffledStudents[i - currentEmptyCount];
+                            m_seats[i].seatElement = CreateSeatControl(m_seats[i].row, m_seats[i].col, false, m_seats[i].studentName);
+                        }
+                        else
+                        {
+                            m_seats[i].seatElement = CreateSeatControl(m_seats[i].row, m_seats[i].col, true, L"");
+                            currentEmptyCount++;
+                        }
+                        Grid::SetRow(m_seats[i].seatElement, m_seats[i].row);
+                        Grid::SetColumn(m_seats[i].seatElement, m_seats[i].col);
+                        SeatGrid().Children().SetAt(i, m_seats[i].seatElement);
+                    }
+
+                    studentsSeatsCurrent = shuffledStudents;
+                    currentTimes++;
+                }
+                else
+                {
+                    DT.Stop();
+                    RandomizeButton().IsEnabled(true);
+                }
+            }
+        );
+
+        DT.Start();
     }
 
     // CaptureButton_Click: Captures the host window and saves it as a PNG image.
@@ -235,6 +313,36 @@ namespace winrt::LuckyStudentPicker::implementation
         auto localFolder = ApplicationData::Current().LocalFolder();
         auto capturesFolder = co_await localFolder.CreateFolderAsync(L"LuckyStudentPicker\\Captures", CreationCollisionOption::OpenIfExists);
         ShellExecuteA(nullptr, "open", to_string(capturesFolder.Path()).c_str(), 0, nullptr, SW_SHOWNORMAL);
+    }
+    
+    winrt::Windows::Foundation::IAsyncAction winrt::LuckyStudentPicker::implementation::SeatArrangerPage::RandomizingTimes_ValueChanged(winrt::Microsoft::UI::Xaml::Controls::NumberBox const&, winrt::Microsoft::UI::Xaml::Controls::NumberBoxValueChangedEventArgs const&)
+    {
+        auto value = RandomizingTimes().Value();
+        if (value > 50 || value <= 0) RandomizeTimesErrorPrompt().IsOpen(true);
+        else RandomizeTimesErrorPrompt().IsOpen(false);
+        co_return;
+    }
+    
+    winrt::Windows::Foundation::IAsyncAction winrt::LuckyStudentPicker::implementation::SeatArrangerPage::RandomizingTimes_Loaded(winrt::Windows::Foundation::IInspectable const&, winrt::Microsoft::UI::Xaml::RoutedEventArgs const&)
+    {
+        Windows::Globalization::NumberFormatting::IncrementNumberRounder INR = Windows::Globalization::NumberFormatting::IncrementNumberRounder::IncrementNumberRounder();
+        Windows::Globalization::NumberFormatting::DecimalFormatter DF = Windows::Globalization::NumberFormatting::DecimalFormatter::DecimalFormatter();
+        DF.FractionDigits(0);
+        DF.NumberRounder(INR);
+        RandomizingTimes().NumberFormatter(DF);
+        co_return;
+    }
+    
+    void winrt::LuckyStudentPicker::implementation::SeatArrangerPage::RandomizeTimesErrorPrompt_Loaded(winrt::Windows::Foundation::IInspectable const&, winrt::Microsoft::UI::Xaml::RoutedEventArgs const&)
+    {
+        RandomizingTimes().ValueChanged({ this, &winrt::LuckyStudentPicker::implementation::SeatArrangerPage::RandomizingTimes_ValueChanged });
+    }
+
+    void winrt::LuckyStudentPicker::implementation::SeatArrangerPage::ResetButton_Click(winrt::Windows::Foundation::IInspectable const&, winrt::Microsoft::UI::Xaml::RoutedEventArgs const&)
+    {
+        InitializeSeatGrid(true);
+        RandomizeTimesIndicator().Text(L"0");
+        studentsSeatsCurrent.clear();
     }
 
     // main code ends here

@@ -56,8 +56,13 @@ namespace winrt::LuckyStudentPicker::implementation
         };
 
         // Helper methods
-        void InitializeSeatGrid();
+        void InitializeSeatGrid(bool);
         static HWND s_hostHwnd;
+    public:
+        winrt::Windows::Foundation::IAsyncAction RandomizingTimes_ValueChanged(winrt::Microsoft::UI::Xaml::Controls::NumberBox const& sender, winrt::Microsoft::UI::Xaml::Controls::NumberBoxValueChangedEventArgs const& args);
+        winrt::Windows::Foundation::IAsyncAction RandomizingTimes_Loaded(winrt::Windows::Foundation::IInspectable const& sender, winrt::Microsoft::UI::Xaml::RoutedEventArgs const& e);
+        void RandomizeTimesErrorPrompt_Loaded(winrt::Windows::Foundation::IInspectable const& sender, winrt::Microsoft::UI::Xaml::RoutedEventArgs const& e);
+        void ResetButton_Click(winrt::Windows::Foundation::IInspectable const& sender, winrt::Microsoft::UI::Xaml::RoutedEventArgs const& e);
     };
 }
 

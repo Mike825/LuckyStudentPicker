@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "NamelistHelper.h"
+#include <string>
 #include <winrt/Microsoft.Windows.Storage.h>
 #include <winrt/Windows.Storage.Streams.h>
 #include <vector>
@@ -15,7 +16,9 @@ namespace nlohmann {
     template <>
     struct adl_serializer<winrt::hstring> {
         static winrt::hstring from_json(const json& j) {
-            return winrt::to_hstring(j.get<std::string>());
+            string s = j.get<std::string>();
+            if (s.size() > 17) s = s.substr(0, 17);
+            return winrt::to_hstring(s);
         }
     };
 }

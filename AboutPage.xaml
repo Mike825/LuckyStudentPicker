@@ -23,13 +23,17 @@
                         <StackPanel Orientation="Vertical">
                             <TextBlock Text="Version" FontSize="16" FontWeight="Bold"></TextBlock>
                             <StackPanel Orientation="Vertical" Margin="16,0,0,0">
-                                <TextBlock Text="Version 1.4.3.0"></TextBlock>
-                                <TextBlock Text="Build date: 2026.6.22"></TextBlock>
+                                <TextBlock Text="Version 1.4.4.0"></TextBlock>
+                                <TextBlock Text="Build date: 2026.10.11"></TextBlock>
                             </StackPanel>
                             <TextBlock Text="What's New" FontSize="16" FontWeight="Bold"></TextBlock>
                             <StackPanel Orientation="Vertical" Margin="16,0,0,0">
-                                <TextBlock Text="+ Seat Arranger capturing ability"></TextBlock>
-                                <TextBlock Text="* Seat Arranger reconstructed using NavigationView"></TextBlock>
+                                <TextBlock Text="+ Seat Arranger automation: consecutive randomizations"></TextBlock>
+                                <TextBlock Text="* Seat Arranger preserves last result"></TextBlock>
+                                <TextBlock Text="+ Main Window adopts flexible layout"></TextBlock>
+                                <TextBlock Text="+ Main Window button can be hidden"></TextBlock>
+                                <TextBlock Text="* Edit prevents white spaces"></TextBlock>
+                                <TextBlock Text="* Various bug fixes"></TextBlock>
                             </StackPanel>
                             <TextBlock Text="New feature to be added" FontSize="16" FontWeight="Bold"></TextBlock>
                             <StackPanel Orientation="Vertical" Margin="16,0,0,0">
