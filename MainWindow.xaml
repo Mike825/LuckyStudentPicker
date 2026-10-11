@@ -57,7 +57,6 @@
                 <AppBarButton.Flyout>
                     <MenuFlyout>
                         <MenuFlyoutItem Text="Reset" Click="reset"></MenuFlyoutItem>
-                        <MenuFlyoutItem Text="Reload Namelist" Click="ReloadNamelist_Click"></MenuFlyoutItem>
                     </MenuFlyout>
                 </AppBarButton.Flyout>
             </AppBarButton>
@@ -113,7 +112,15 @@
                     <KeyboardAccelerator Modifiers="None" Key="PageDown"></KeyboardAccelerator>
                     <KeyboardAccelerator Modifiers="None" Key="PageUp"></KeyboardAccelerator>
                 </Button.KeyboardAccelerators>
-                <StackPanel Name ="buttonStack" Orientation="Horizontal" VerticalAlignment="Center">
+                    <Button.ContextFlyout>
+                        <MenuFlyout>
+                            <MenuFlyoutItem Name="HideButton" IsEnabled="False" Text="Hide button" Click="HideButton_Click">
+                                <MenuFlyoutItem.Icon>
+                                    <FontIcon Glyph="&#xED1A;"></FontIcon>
+                                </MenuFlyoutItem.Icon>
+                            </MenuFlyoutItem>
+                    </Button.ContextFlyout>
+                    <StackPanel Name ="buttonStack" Orientation="Horizontal" VerticalAlignment="Center" Margin="36,18,36,18">
                     <FontIcon Name="buttonGlyph" Glyph="&#xF5B0;" FontSize="20" />
                     <TextBlock Name = "buttonText" Text="  开始" FontSize="24" FontFamily="Microsoft YaHei UI" FontWeight="Light"></TextBlock>
                 </StackPanel>
