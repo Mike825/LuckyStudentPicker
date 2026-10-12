@@ -131,8 +131,8 @@ namespace winrt::LuckyStudentPicker::implementation
                 
                 Microsoft::UI::Windowing::OverlappedPresenter OP = Microsoft::UI::Windowing::OverlappedPresenter::Create();
                 OP.SetBorderAndTitleBar(true, true);
-                OP.PreferredMinimumHeight(H);
-                OP.PreferredMinimumWidth(W);
+                OP.PreferredMinimumHeight(windowHeight);
+                OP.PreferredMinimumWidth(windowWidth);
                 this->AppWindow().SetPresenter(OP);
                 if (CurrentWindowMode != 1) this->AppWindow().TitleBar().PreferredHeightOption(Microsoft::UI::Windowing::TitleBarHeightOption::Standard);
                 CurrentWindowMode = 1;
